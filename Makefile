@@ -1,10 +1,10 @@
 appname := sim
 
-CC := gcc
-CFLAGS := -g -Wall -pthread -fopenmp
+CC := mpicc 
+# CFLAGS := -g -Wall -pthread -fopenmp
 
-CXX := gcc
-LDFLAGS :=  -fopenmp -pthread -lm
+CXX := mpicc
+# LDFLAGS :=  -fopenmp -pthread -lm
 
 srcfiles := $(shell find . -name "*.c")
 objects  := $(patsubst %.c, %.o, $(srcfiles))
