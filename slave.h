@@ -10,6 +10,6 @@
 #include "line.h"
 #include "station_stat.h"
 
-void slave();
+void slave(int my_id, int slaves);
 
 #endif

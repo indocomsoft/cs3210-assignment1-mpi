@@ -1,5 +1,48 @@
 #include "line.h"
 
+#define LINE_NUM_INT_FIELDS 3
+
+line_t* line_broadcast_receive(int source)
+{
+    int int_buff[LINE_NUM_INT_FIELDS];
+
+    line_t* line = (line_t*)malloc(sizeof(line_t));
+
+    // num_stations, num_trains, start_train_id
+    MPI_Bcast((void*)&int_buff, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
+    line->num_stations = int_buff[0];
+    line->num_trains = int_buff[1];
+    line->start_train_id = int_buff[2];
+
+    line->stations = (int*)malloc(sizeof(int) * line->num_stations);
+
+    //stations
+    MPI_Bcast((void*)line->stations, line->num_stations, MPI_INT, source, MPI_COMM_WORLD);
+
+    // id
+    MPI_Bcast((void*)&(line->id), 1, MPI_CHAR, source, MPI_COMM_WORLD);
+
+    return line;
+}
+
+void line_broadcast_send(line_t* line, int source)
+{
+    int int_buff[LINE_NUM_INT_FIELDS];
+
+    int_buff[0] = line->num_stations;
+    int_buff[1] = line->num_trains;
+    int_buff[2] = line->start_train_id;
+
+    // num_stations, num_trains, start_train_id
+    MPI_Bcast((void*)&int_buff, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
+
+    // stations
+    MPI_Bcast((void*)line->stations, line->num_stations, MPI_INT, source, MPI_COMM_WORLD);
+
+    // id
+    MPI_Bcast((void*)&(line->id), 1, MPI_CHAR, source, MPI_COMM_WORLD);
+}
+
 void line_init(line_t* line, input_t* input)
 {
     int i, j;
