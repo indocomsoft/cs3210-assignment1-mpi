@@ -29,10 +29,10 @@ void train_send(train_t* train, int dest)
 int train_recv(train_t* train, int source)
 {
     int data[TRAIN_NUM_FIELDS];
-    MPI_Status* status;
-    MPI_Recv(data, TRAIN_NUM_FIELDS, MPI_INT, source, MPI_ANY_TAG, MPI_COMM_WORLD, status);
+    MPI_Status status;
+    MPI_Recv(data, TRAIN_NUM_FIELDS, MPI_INT, source, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
     train->id = data[TRAIN_ID];
     train->line_id = data[TRAIN_LINE_ID];
     train->travelling_forward = (bool)data[TRAIN_NUM_FIELDS];
-    return status->MPI_TAG;
+    return status.MPI_TAG;
 }
