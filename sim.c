@@ -1,19 +1,8 @@
-#include <mpi.h>
-#include <stdio.h>
+#include "sim.h"
 
 #define MASTER_ID slaves
 
 int myid, slaves;
-
-void master()
-{
-    puts("I am the master!");
-}
-
-void slave()
-{
-    puts("But the 13th amendment!!!");
-}
 
 int main(int argc, char** argv)
 {
