@@ -19,7 +19,7 @@ void line_init(line_t*, input_t*);
 void line_print(line_t*);
 void line_print_stats(line_t*);
 
-line_t* line_broadcast_receive(int source);
+void line_broadcast_receive(line_t* line, int source);
 void line_broadcast_send(line_t* line, int source);
 
 #endif

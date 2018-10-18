@@ -2,11 +2,9 @@
 
 #define LINE_NUM_INT_FIELDS 3
 
-line_t* line_broadcast_receive(int source)
+void line_broadcast_receive(line_t* line, int source)
 {
     int int_buff[LINE_NUM_INT_FIELDS];
-
-    line_t* line = (line_t*)malloc(sizeof(line_t));
 
     // num_stations, num_trains, start_train_id
     MPI_Bcast((void*)&int_buff, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
@@ -21,8 +19,6 @@ line_t* line_broadcast_receive(int source)
 
     // id
     MPI_Bcast((void*)&(line->id), 1, MPI_CHAR, source, MPI_COMM_WORLD);
-
-    return line;
 }
 
 void line_broadcast_send(line_t* line, int source)
