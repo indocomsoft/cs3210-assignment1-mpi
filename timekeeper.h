@@ -1,8 +1,7 @@
 #ifndef TIMEKEEPER_DEFINED
 #define TIMEKEEPER_DEFINED
 
-// For max and min
-#include "station_stat.h"
+#include "minmax.h"
 
 typedef struct timekeeper_t {
     int time;
