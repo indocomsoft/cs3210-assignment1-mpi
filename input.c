@@ -54,7 +54,7 @@ void input_init(input_t* input)
     scanf("%d\n", &(input->ticks));
 
     // NUM TRAINS
-    input->num_trains = (int*)malloc(sizeof(int) * 3);
+    input->num_trains = (int*)malloc(sizeof(int) * LINE_NUM_LINES);
 
     fgets(str_buf, MAX_STATION_NAME_LENGTH * input->num_stations, stdin);
     i = 0;
@@ -97,7 +97,7 @@ void input_print(input_t* input)
 
     printf("%d\n", input->ticks);
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < LINE_NUM_LINES; i++) {
         printf("%d ", input->num_trains[i]);
     }
     printf("\n");

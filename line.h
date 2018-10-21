@@ -1,5 +1,8 @@
 #ifndef LINE_DEFINED
 #define LINE_DEFINED
+
+#define LINE_NUM_LINES 3
+
 typedef struct raw_line_t line_t;
 
 #include "input.h"

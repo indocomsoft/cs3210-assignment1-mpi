@@ -1,12 +1,12 @@
 #include "spawn.h"
 
-bool spawn_get_spawn_info(spawn_info_t spawn_infos[6], line_t* lines[3], int src, int dst)
+bool spawn_get_spawn_info(spawn_info_t spawn_infos[6], line_t* lines[LINE_NUM_LINES], int src, int dst)
 {
     bool is_spawn = false;
     int i;
     line_t line;
     int idx;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < LINE_NUM_LINES; i++) {
         line = *lines[i];
         idx = 2 * i;
         if (line.stations[line.num_stations - 2] == src && line.stations[line.num_stations - 1] == dst) {

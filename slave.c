@@ -10,7 +10,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     map_t map;
     map_broadcast_receive(&map, MASTER_ID);
 
-    line_t* lines[3];
+    line_t* lines[LINE_NUM_LINES];
     line_broadcast_receive(lines, MASTER_ID);
 
     edge_map_t edge_map;
@@ -115,7 +115,7 @@ void enqueue_train_for_departure(train_t train, queue_t* exit_queue)
     queue_enqueue(exit_queue, done_pair);
 }
 
-int get_train_next_edge(train_t* train, int station_id, line_t* lines[3])
+int get_train_next_edge(train_t* train, int station_id, line_t* lines[LINE_NUM_LINES])
 {
     int i;
     line_t* line = lines[train->line_id];

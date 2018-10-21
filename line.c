@@ -2,11 +2,11 @@
 
 #define LINE_NUM_INT_FIELDS 3
 
-void line_broadcast_receive(line_t* lines[3], int source)
+void line_broadcast_receive(line_t* lines[LINE_NUM_LINES], int source)
 {
     int i;
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < LINE_NUM_LINES; i++) {
         lines[i] = (line_t*)malloc(sizeof(line_t));
         line_broadcast_receive_one(lines[i], source);
     }
@@ -16,7 +16,7 @@ void line_broadcast_send(line_t** lines, int source)
 {
     int i;
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < LINE_NUM_LINES; i++) {
         line_broadcast_send_one(lines[i], source);
     }
 }
