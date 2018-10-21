@@ -31,6 +31,11 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         }
     }
 
+    spawn_info_t spawn_infos[6];
+    train_t trains_spawned[6];
+    bool should_spawn;
+    should_spawn = spawn_get_spawn_info(spawn_infos, lines, src, dst);
+
     queue_t* enter_queue;
     queue_t* exit_queue;
 
@@ -45,13 +50,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
 
     // If current train exists and is done
     if (current_train.id != TRAIN_NULL_ID && current_train_done_time == current_time) {
-        // request depart time from master;
-        int depart_time = 0;
-        pair_t done_pair;
-        done_pair.time = depart_time;
-        done_pair.train = current_train;
-        queue_enqueue(exit_queue, done_pair);
-        // update current_train_push_to_next_edge_time
+        enqueue_train_for_departure(current_train, exit_queue);
     }
 
     // If no current train and there's a train waiting to enter
@@ -59,6 +58,16 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         pair_t enter_queue_head = queue_dequeue(enter_queue);
         current_train = enter_queue_head.train;
         current_train_done_time = current_time + transit_time;
+    }
+
+    if (should_spawn == true) {
+        int spawned = spawn_trains(spawn_infos, trains_spawned);
+        if (spawned == 0) {
+            should_spawn = false;
+        }
+        for (i = 0; i < spawned; i++) {
+            enqueue_train_for_departure(trains_spawned[i], exit_queue);
+        }
     }
 
     // If there is a train that needs to be sent to the next edge
@@ -90,6 +99,16 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
 
     // report to master done
     // advance time
+}
+
+void enqueue_train_for_departure(train_t train, queue_t* exit_queue)
+{
+    // request depart time from master;
+    int depart_time = 0;
+    pair_t done_pair;
+    done_pair.time = depart_time;
+    done_pair.train = train;
+    queue_enqueue(exit_queue, done_pair);
 }
 
 int get_train_next_edge(train_t* train, int station_id, line_t* lines[3])
