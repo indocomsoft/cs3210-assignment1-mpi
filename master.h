@@ -1,6 +1,7 @@
 #ifndef MASTER_DEFINED
 #define MASTER_DEFINED
 
+#include <mpi.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
