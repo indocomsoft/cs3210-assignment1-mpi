@@ -36,11 +36,11 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     bool should_spawn;
     should_spawn = spawn_get_spawn_info(spawn_infos, lines, src, dst);
 
-    queue_t* enter_queue;
-    queue_t* exit_queue;
+    queue_t enter_queue;
+    queue_t exit_queue;
 
-    queue_init(enter_queue);
-    queue_init(exit_queue);
+    queue_init(&enter_queue);
+    queue_init(&exit_queue);
 
     train_t current_train;
     current_train.id = TRAIN_NULL_ID;
@@ -50,12 +50,12 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
 
     // If current train exists and is done
     if (current_train.id != TRAIN_NULL_ID && current_train_done_time == current_time) {
-        enqueue_train_for_departure(current_train, exit_queue);
+        enqueue_train_for_departure(current_train, &exit_queue);
     }
 
     // If no current train and there's a train waiting to enter
-    if (current_train.id == TRAIN_NULL_ID && queue_is_empty(enter_queue) == false) {
-        pair_t enter_queue_head = queue_dequeue(enter_queue);
+    if (current_train.id == TRAIN_NULL_ID && queue_is_empty(&enter_queue) == false) {
+        pair_t enter_queue_head = queue_dequeue(&enter_queue);
         current_train = enter_queue_head.train;
         current_train_done_time = current_time + transit_time;
         // inform master
@@ -68,13 +68,13 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
             should_spawn = false;
         }
         for (i = 0; i < spawned; i++) {
-            enqueue_train_for_departure(trains_spawned[i], exit_queue);
+            enqueue_train_for_departure(trains_spawned[i], &exit_queue);
         }
     }
 
     // If there is a train that needs to be sent to the next edge
-    if (queue_is_empty(exit_queue) == false && queue_head(exit_queue).time == current_time) {
-        train_t depart_train = queue_dequeue(exit_queue).train;
+    if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time) {
+        train_t depart_train = queue_dequeue(&exit_queue).train;
         int next_edge = get_train_next_edge(&depart_train, dst, lines);
 
         train_send(&depart_train, next_edge, comm_slave);
@@ -95,7 +95,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         if (status == TRAIN_GOT_TRAIN) {
             pair_t enter_pair;
             enter_pair.train = train_buf;
-            queue_enqueue(enter_queue, enter_pair);
+            queue_enqueue(&enter_queue, enter_pair);
         } else {
             received++;
         }
