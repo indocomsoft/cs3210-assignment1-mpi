@@ -58,6 +58,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         pair_t enter_queue_head = queue_dequeue(enter_queue);
         current_train = enter_queue_head.train;
         current_train_done_time = current_time + transit_time;
+        // inform master
     }
 
     if (should_spawn == true) {
