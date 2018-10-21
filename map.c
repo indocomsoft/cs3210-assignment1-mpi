@@ -39,8 +39,8 @@ void edge_map_get_slave_meta(edge_map_t* edge_map, int my_id, int res[2])
     for (i = 0; i < edge_map->num_stations; i++) {
         for (j = 0; j < edge_map->num_stations; j++) {
             if (edge_map->edges[i][j] == my_id) {
-                res[0] = i;
-                res[1] = j;
+                res[SLAVE_META_SRC] = i;
+                res[SLAVE_META_DST] = j;
                 return;
             }
         }

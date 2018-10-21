@@ -22,7 +22,7 @@ struct raw_spawn_info_t {
     bool forward;
 };
 
-bool spawn_get_spawn_info(spawn_info_t spawn_infos[6], line_t* lines[3], int src, int dst);
-int spawn_trains(spawn_info_t spawn_infos[6], train_t trains[6]);
+bool spawn_get_spawn_info(spawn_info_t spawn_infos[LINE_NUM_LINES], line_t* lines[LINE_NUM_LINES], int src, int dst);
+int spawn_trains(spawn_info_t spawn_infos[LINE_NUM_LINES], train_t trains[LINE_NUM_LINES]);
 
 #endif

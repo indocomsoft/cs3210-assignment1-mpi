@@ -1,44 +1,37 @@
 #include "spawn.h"
 
-bool spawn_get_spawn_info(spawn_info_t spawn_infos[6], line_t* lines[LINE_NUM_LINES], int src, int dst)
+bool spawn_get_spawn_info(spawn_info_t spawn_infos[LINE_NUM_LINES], line_t* lines[LINE_NUM_LINES], int src, int dst)
 {
     bool is_spawn = false;
     int i;
     line_t line;
-    int idx;
     for (i = 0; i < LINE_NUM_LINES; i++) {
         line = *lines[i];
-        idx = 2 * i;
-        if (line.stations[line.num_stations - 2] == src && line.stations[line.num_stations - 1] == dst) {
-            spawn_infos[idx].line_id = i;
-            spawn_infos[idx].count = 0;
-            // If odd number of trains for the line, extra train will travel forward
-            spawn_infos[idx].num_trains = line.num_trains - line.num_trains / 2;
-            spawn_infos[idx].forward = true;
-            is_spawn = true;
-        } else {
-            spawn_infos[idx].num_trains = 0;
-        }
+        spawn_infos[i].line_id = i;
+        spawn_infos[i].count = 0;
 
-        if (line.stations[1] == src && line.stations[0] == dst) {
-            spawn_infos[idx + 1].line_id = i;
-            spawn_infos[idx + 1].count = 0;
-            spawn_infos[idx + 1].num_trains = line.num_trains / 2;
-            spawn_infos[idx + 1].forward = false;
+        if (line.stations[line.num_stations - 2] == src && line.stations[line.num_stations - 1] == dst) {
+            // If odd number of trains for the line, extra train will travel forward
+            spawn_infos[i].num_trains = line.num_trains - line.num_trains / 2;
+            spawn_infos[i].forward = true;
+            is_spawn = true;
+        } else if (line.stations[1] == src && line.stations[0] == dst) {
+            spawn_infos[i].num_trains = line.num_trains / 2;
+            spawn_infos[i].forward = false;
             is_spawn = true;
         } else {
-            spawn_infos[idx + 1].num_trains = 0;
+            spawn_infos[i].num_trains = 0;
         }
     }
 
     return is_spawn;
 }
 
-int spawn_trains(spawn_info_t spawn_infos[6], train_t trains[6])
+int spawn_trains(spawn_info_t spawn_infos[LINE_NUM_LINES], train_t trains[LINE_NUM_LINES])
 {
     int spawned = 0;
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < LINE_NUM_LINES; i++) {
         if (spawn_infos[i].num_trains > 0 && spawn_infos[i].count < spawn_infos[i].num_trains) {
             int train_id = spawn_infos[i].count * 2;
             if (spawn_infos[i].forward == false) {
@@ -47,8 +40,9 @@ int spawn_trains(spawn_info_t spawn_infos[6], train_t trains[6])
             }
 
             trains[spawned].id = train_id;
-            trains[spawned].line_id = i / 2;
+            trains[spawned].line_id = i;
             trains[spawned].travelling_forward = spawn_infos[i].forward;
+            spawn_infos[i].count++;
             spawned++;
         }
     }

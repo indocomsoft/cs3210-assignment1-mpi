@@ -16,11 +16,11 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     edge_map_t edge_map;
     edge_map_init(&edge_map, &map);
 
-    int slave_meta[2];
+    int slave_meta[SLAVE_META_SIZE];
     edge_map_get_slave_meta(&edge_map, my_id, slave_meta);
 
-    int src = slave_meta[0];
-    int dst = slave_meta[1];
+    int src = slave_meta[SLAVE_META_SRC];
+    int dst = slave_meta[SLAVE_META_DST];
     int transit_time = map.stations[src][dst];
     printf("edge id: %d, src: %d, dst: %d\n", my_id, src, dst);
 
@@ -31,8 +31,8 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         }
     }
 
-    spawn_info_t spawn_infos[6];
-    train_t trains_spawned[6];
+    spawn_info_t spawn_infos[LINE_NUM_LINES];
+    train_t trains_spawned[LINE_NUM_LINES];
     bool should_spawn;
     should_spawn = spawn_get_spawn_info(spawn_infos, lines, src, dst);
 

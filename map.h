@@ -3,8 +3,10 @@
 typedef struct raw_map_t map_t;
 typedef struct raw_edge_map_t edge_map_t;
 
-#include "input.h"
 #include <mpi.h>
+
+#include "input.h"
+#include "slave.h"
 
 struct raw_map_t {
     int num_stations;
