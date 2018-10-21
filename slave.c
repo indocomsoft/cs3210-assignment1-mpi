@@ -61,6 +61,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         // inform master
     }
 
+    // Spawn trains and report to master if necessary
     if (should_spawn == true) {
         int spawned = spawn_trains(spawn_infos, trains_spawned);
         if (spawned == 0) {
@@ -79,12 +80,14 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         train_send(&depart_train, next_edge, comm_slave);
     }
 
+    // Send done signal to all edges I can send trains to.
     for (i = 0; i < map.num_stations; i++) {
         if (map.stations[dst][i] != 0) {
             train_send(NULL, edge_map.edges[dst][i], comm_slave);
         }
     }
 
+    // Receive done signals from all edges that could possibly send trains to me
     int received = 0;
     while (received < num_to_receive) {
         train_t train_buf;
