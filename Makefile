@@ -1,7 +1,9 @@
 appname := sim
 
+defs := -DDEBUG
+
 CC := mpicc
-CFLAGS := -g -Wall -DDEBUG
+CFLAGS := -g -Wall ${defs}
 
 CXX := mpicc
 # LDFLAGS :=  -fopenmp -pthread -lm

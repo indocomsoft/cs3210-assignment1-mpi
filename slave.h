@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "line.h"
+#include "map.h"
 #include "station_stat.h"
 
 void slave(int my_id, int slaves);

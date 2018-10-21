@@ -84,7 +84,7 @@ void input_print(input_t* input)
     }
     printf("\n");
 
-    print_map(input->map);
+    map_print(input->map);
 
     for (i = 0; i < input->num_stations; i++) {
         printf("%.2lf ", input->popularity[i]);

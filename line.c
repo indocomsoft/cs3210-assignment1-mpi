@@ -2,15 +2,34 @@
 
 #define LINE_NUM_INT_FIELDS 3
 
-void line_broadcast_receive(line_t* line, int source)
+void line_broadcast_receive(line_t* lines[3], int source)
 {
-    int int_buff[LINE_NUM_INT_FIELDS];
+    int i;
+
+    for (i = 0; i < 3; i++) {
+        lines[i] = (line_t*)malloc(sizeof(line_t));
+        line_broadcast_receive_one(lines[i], source);
+    }
+}
+
+void line_broadcast_send(line_t** lines, int source)
+{
+    int i;
+
+    for (i = 0; i < 3; i++) {
+        line_broadcast_send_one(lines[i], source);
+    }
+}
+
+void line_broadcast_receive_one(line_t* line, int source)
+{
+    int int_buf[LINE_NUM_INT_FIELDS];
 
     // num_stations, num_trains, start_train_id
-    MPI_Bcast((void*)&int_buff, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
-    line->num_stations = int_buff[0];
-    line->num_trains = int_buff[1];
-    line->start_train_id = int_buff[2];
+    MPI_Bcast((void*)&int_buf, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
+    line->num_stations = int_buf[0];
+    line->num_trains = int_buf[1];
+    line->start_train_id = int_buf[2];
 
     line->stations = (int*)malloc(sizeof(int) * line->num_stations);
 
@@ -21,16 +40,16 @@ void line_broadcast_receive(line_t* line, int source)
     MPI_Bcast((void*)&(line->id), 1, MPI_CHAR, source, MPI_COMM_WORLD);
 }
 
-void line_broadcast_send(line_t* line, int source)
+void line_broadcast_send_one(line_t* line, int source)
 {
-    int int_buff[LINE_NUM_INT_FIELDS];
+    int int_buf[LINE_NUM_INT_FIELDS];
 
-    int_buff[0] = line->num_stations;
-    int_buff[1] = line->num_trains;
-    int_buff[2] = line->start_train_id;
+    int_buf[0] = line->num_stations;
+    int_buf[1] = line->num_trains;
+    int_buf[2] = line->start_train_id;
 
     // num_stations, num_trains, start_train_id
-    MPI_Bcast((void*)&int_buff, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
+    MPI_Bcast((void*)&int_buf, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
 
     // stations
     MPI_Bcast((void*)line->stations, line->num_stations, MPI_INT, source, MPI_COMM_WORLD);
