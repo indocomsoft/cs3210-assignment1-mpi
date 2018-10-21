@@ -16,6 +16,7 @@ struct raw_input_t {
     char** station_names;
     map_t* map;
     double* popularity;
+    line_t* lines[3];
     line_t* line_green;
     line_t* line_yellow;
     line_t* line_blue;

@@ -9,8 +9,8 @@ void master(int my_id, int slaves)
 #ifdef DEBUG
     input_print(input);
 #endif
-    line_print(input->line_blue);
+    line_print(input->lines[2]);
     puts("sending");
-    line_broadcast_send(input->line_blue, MASTER_ID);
+    line_broadcast_send(input->lines[2], MASTER_ID);
     puts("I am the master!");
 }
