@@ -5,30 +5,29 @@ bool spawn_get_spawn_info(spawn_info_t spawn_infos[6], line_t* lines[3], int src
     bool is_spawn = false;
     int i;
     line_t line;
-    spawn_info_t spawn_info;
+    int idx;
     for (i = 0; i < 3; i++) {
         line = *lines[i];
-        spawn_info = spawn_infos[2 * i];
+        idx = 2 * i;
         if (line.stations[line.num_stations - 2] == src && line.stations[line.num_stations - 1] == dst) {
-            spawn_info.line_id = i;
-            spawn_info.count = 0;
+            spawn_infos[idx].line_id = i;
+            spawn_infos[idx].count = 0;
             // If odd number of trains for the line, extra train will travel forward
-            spawn_info.num_trains = line.num_trains - line.num_trains / 2;
-            spawn_info.forward = true;
+            spawn_infos[idx].num_trains = line.num_trains - line.num_trains / 2;
+            spawn_infos[idx].forward = true;
             is_spawn = true;
         } else {
-            spawn_info.num_trains = 0;
+            spawn_infos[idx].num_trains = 0;
         }
 
-        spawn_info = spawn_infos[2 * i + 1];
         if (line.stations[1] == src && line.stations[0] == dst) {
-            spawn_info.line_id = i;
-            spawn_info.count = 0;
-            spawn_info.num_trains = line.num_trains / 2;
-            spawn_info.forward = false;
+            spawn_infos[idx + 1].line_id = i;
+            spawn_infos[idx + 1].count = 0;
+            spawn_infos[idx + 1].num_trains = line.num_trains / 2;
+            spawn_infos[idx + 1].forward = false;
             is_spawn = true;
         } else {
-            spawn_info.num_trains = 0;
+            spawn_infos[idx + 1].num_trains = 0;
         }
     }
 
@@ -53,5 +52,6 @@ int spawn_trains(spawn_info_t spawn_infos[6], train_t trains[6])
             spawned++;
         }
     }
+
     return spawned;
 }
