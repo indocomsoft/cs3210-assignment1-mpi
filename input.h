@@ -4,6 +4,7 @@
 typedef struct raw_input_t input_t;
 
 #include "line.h"
+#include "map.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +14,7 @@ typedef struct raw_input_t input_t;
 struct raw_input_t {
     int num_stations;
     char** station_names;
-    int** stations;
+    map_t* map;
     double* popularity;
     line_t* line_green;
     line_t* line_yellow;

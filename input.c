@@ -24,19 +24,7 @@ void input_init(input_t* input)
     }
 
     // STATIONS
-    input->stations = (int**)malloc(sizeof(int*) * input->num_stations);
-    for (i = 0; i < input->num_stations; i++) {
-        input->stations[i] = (int*)malloc(sizeof(int) * input->num_stations);
-    }
-
-    for (i = 0; i < input->num_stations; i++) {
-        fgets(str_buf, MAX_STATION_NAME_LENGTH * input->num_stations, stdin);
-        j = 0;
-        for (next = strtok(str_buf, " "); next != NULL; next = strtok(NULL, " ")) {
-            input->stations[i][j] = atoi(next);
-            j++;
-        }
-    }
+    map_init(input);
 
     // POPULARITY
     input->popularity = (double*)malloc(sizeof(int*) * input->num_stations);
@@ -97,12 +85,7 @@ void input_print(input_t* input)
     }
     printf("\n");
 
-    for (i = 0; i < input->num_stations; i++) {
-        for (j = 0; j < input->num_stations; j++) {
-            printf("%d ", input->stations[i][j]);
-        }
-        printf("\n");
-    }
+    print_map(input->map);
 
     for (i = 0; i < input->num_stations; i++) {
         printf("%.2lf ", input->popularity[i]);
@@ -128,10 +111,7 @@ void input_cleanup(input_t* input)
         free(input->station_names[i]);
     }
     free(input->station_names);
-    for (i = 0; i < input->num_stations; i++) {
-        free(input->stations[i]);
-    }
-    free(input->stations);
+    map_cleanup(input->map);
     free(input->popularity);
     free(input->line_green->stations);
     free(input->line_green);
