@@ -12,10 +12,11 @@ typedef struct raw_commstat_t commstat_t;
 
 struct raw_commstat_t {
     int train_id;
+    int train_line_id;
     int station_id;
 };
 
-void commstat_init(commstat_t* stat, int train_id, int station_id);
+void commstat_init(commstat_t* stat, int train_id, int train_line_id, int station_id);
 
 /**
  * For slaves.
@@ -47,7 +48,7 @@ void commstat_master_send_ready_time(int ready_time, int slave_id);
  * For master.
  * Receive stat from slave_id.
  *
- * Returns either END_COMM_TAG, START_MOVING_TAG, or ARRIVED_TAG
+ * Returns either COMMSTAT_END_COMM, COMMSTAT_START_MOVING, or COMMSTAT_ARRIVED
  */
 int commstat_master_recv(commstat_t* stat, int slave_id);
 
