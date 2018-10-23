@@ -3,6 +3,10 @@
 
 #define LINE_NUM_LINES 3
 
+#define LINE_GREEN 0
+#define LINE_YELLOW 1
+#define LINE_BLUE 2
+
 typedef struct raw_line_t line_t;
 
 #include "input.h"
@@ -21,7 +25,7 @@ struct raw_line_t {
 void line_init(line_t*, input_t*);
 void line_print(line_t*);
 void line_print_stats(line_t*);
-void line_broadcast_receive(line_t* lines[3], int source);
+void line_broadcast_receive(line_t* lines[LINE_NUM_LINES], int source);
 void line_broadcast_send(line_t** lines, int source);
 void line_broadcast_receive_one(line_t* line, int source);
 void line_broadcast_send_one(line_t* line, int source);
