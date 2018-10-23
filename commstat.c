@@ -50,14 +50,16 @@ void commstat_master_send_ready_time(int ready_time, int slave_id)
     MPI_Send(&ready_time, 1, MPI_INT, slave_id, COMMSTAT_ARRIVED, MPI_COMM_WORLD);
 }
 
-int commstat_master_recv(commstat_t* stat, int slave_id)
+void commstat_master_recv(commstat_t* stat, int res[2])
 {
     int buffer[BUFFER_SIZE];
     MPI_Status status;
-    MPI_Recv(buffer, BUFFER_SIZE, MPI_INT, slave_id, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+    MPI_Recv(buffer, BUFFER_SIZE, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
     stat->train_id = buffer[TRAIN_ID];
     stat->train_line_id = buffer[TRAIN_LINE_ID];
     stat->station_id = buffer[STATION_ID];
     stat->travelling_forward = (bool)buffer[TRAVELLING_FORWARD];
-    return status.MPI_TAG;
+    res[0] = status.MPI_TAG;
+    res[1] = status.MPI_SOURCE;
+    // return status.MPI_TAG;
 }

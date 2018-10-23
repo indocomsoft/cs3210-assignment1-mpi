@@ -29,7 +29,7 @@ void train_statuses_init(train_status_t* stat, input_t* input)
 {
     int counter = 0;
     for (int i = 0; i < LINE_NUM_LINES; i++) {
-        for (int j = 0; j < input->num_trains[i]; i++) {
+        for (int j = 0; j < input->num_trains[i]; j++) {
             stat[counter].id = j;
             stat[counter].line_id = i;
             stat[counter].is_travelling = false;
@@ -43,31 +43,65 @@ void train_statuses_init(train_status_t* stat, input_t* input)
 
 void receive_commstats(master_state_t* state)
 {
+    commstat_t commstat;
     int i, station_id, duration, start, train_idx;
-    for (i = 0; i < state->slaves; i++) {
-        commstat_t commstat;
-        int tag = commstat_master_recv(&commstat, i);
-        while (tag != COMMSTAT_END_COMM) {
-            train_idx = state->train_line_id_index[commstat.train_line_id][commstat.train_id];
+    int res[2];
+
+    i = 0;
+
+    while (i < state->slaves) {
+        commstat_master_recv(&commstat, res);
+        int tag = res[0];
+        int edge_id = res[1];
+
+        if (tag == COMMSTAT_END_COMM) {
+            i++;
+        } else {
+            // train_idx = state->train_line_id_index[commstat.train_line_id][commstat.train_id];
+            train_idx = commstat.train_id;
             state->stats[train_idx].spawned = true;
             switch (tag) {
             case COMMSTAT_START_MOVING:
                 state->stats[train_idx].is_travelling = true;
-                state->stats[train_idx].edge_id = i;
+                state->stats[train_idx].edge_id = edge_id;
                 break;
             case COMMSTAT_ARRIVED:
-                station_id = state->edge_to_src_dst[i][SLAVE_META_DST];
+                station_id = state->edge_to_src_dst[edge_id][SLAVE_META_DST];
                 state->stats[train_idx].is_travelling = false;
                 state->stats[train_idx].station_id = station_id;
-                duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
+                // duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
+                duration = 2;
                 start = timekeeper_increase_by(&state->station_timekeepers[station_id], duration, state->time);
-                commstat_master_send_ready_time(start + duration, i);
+                commstat_master_send_ready_time(start + duration, edge_id);
                 station_stat_open_door(state->input->lines[commstat.train_line_id]->stats, start, duration, commstat.travelling_forward);
                 break;
             }
-            tag = commstat_master_recv(&commstat, i);
         }
     }
+
+    // for (i = 0; i < state->slaves; i++) {
+    //     int tag = commstat_master_recv(&commstat, i);
+    //     while (tag != COMMSTAT_END_COMM) {
+    //         train_idx = state->train_line_id_index[commstat.train_line_id][commstat.train_id];
+    //         state->stats[train_idx].spawned = true;
+    //         switch (tag) {
+    //         case COMMSTAT_START_MOVING:
+    //             state->stats[train_idx].is_travelling = true;
+    //             state->stats[train_idx].edge_id = i;
+    //             break;
+    //         case COMMSTAT_ARRIVED:
+    //             station_id = state->edge_to_src_dst[i][SLAVE_META_DST];
+    //             state->stats[train_idx].is_travelling = false;
+    //             state->stats[train_idx].station_id = station_id;
+    //             duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
+    //             start = timekeeper_increase_by(&state->station_timekeepers[station_id], duration, state->time);
+    //             commstat_master_send_ready_time(start + duration, i);
+    //             station_stat_open_door(state->input->lines[commstat.train_line_id]->stats, start, duration, commstat.travelling_forward);
+    //             break;
+    //         }
+    //         tag = commstat_master_recv(&commstat, i);
+    //     }
+    // }
 }
 
 void print_time_tick_stats(master_state_t* state)
@@ -86,6 +120,7 @@ void print_time_tick_stats(master_state_t* state)
             }
         }
     }
+    printf("\n");
 }
 
 void station_timekeepers_init(timekeeper_t* timekeepers, input_t* input)

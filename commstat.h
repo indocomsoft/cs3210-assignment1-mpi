@@ -55,6 +55,6 @@ void commstat_master_send_ready_time(int ready_time, int slave_id);
  *
  * Returns either COMMSTAT_END_COMM, COMMSTAT_START_MOVING, or COMMSTAT_ARRIVED
  */
-int commstat_master_recv(commstat_t* stat, int slave_id);
+void commstat_master_recv(commstat_t* stat, int res[2]);
 
 #endif

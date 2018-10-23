@@ -75,10 +75,9 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
                 enqueue_train_for_departure(trains_spawned[i], &exit_queue, &commstat, dst, MASTER_ID);
             }
         }
-        printf("%d\n", my_id);
 
-        // If there is a train that needs to be sent to the next edge
-        if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time) {
+        // If there is a train that can start queueing for edge at the next tick, send it
+        if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time + 1) {
             train_t depart_train = queue_dequeue(&exit_queue).train;
             int next_station = get_train_next_station(&depart_train, dst, lines);
             int next_edge = edge_map.edges[dst][next_station];
