@@ -14,8 +14,6 @@ void timekeeper_init(timekeeper_t* timekeeper);
 
 /**
  * Increases the timekeeper by duration and returns the new value.
- *
- * This operation is atomic.
  */
 int timekeeper_increase_by(timekeeper_t* timekeeper, int duration, int current_time);
 
