@@ -8,15 +8,18 @@
 typedef struct raw_commstat_t commstat_t;
 
 #include "timekeeper.h"
+
 #include <mpi.h>
+#include <stdbool.h>
 
 struct raw_commstat_t {
     int train_id;
     int train_line_id;
     int station_id;
+    bool travelling_forward;
 };
 
-void commstat_init(commstat_t* stat, int train_id, int train_line_id, int station_id);
+void commstat_init(commstat_t* stat, int train_id, int train_line_id, int station_id, bool travelling_forward);
 
 /**
  * For slaves.
