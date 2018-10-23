@@ -3,6 +3,8 @@
 typedef struct raw_map_t map_t;
 typedef struct raw_edge_map_t edge_map_t;
 
+#define EDGE_MAP_NULL_ID -1
+
 #include <mpi.h>
 
 #include "input.h"

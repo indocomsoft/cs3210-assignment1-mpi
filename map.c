@@ -15,7 +15,7 @@ void edge_map_init(edge_map_t* edge_map, map_t* map)
                 edge_map->edges[i][j] = counter;
                 counter++;
             } else {
-                edge_map->edges[i][j] = -1;
+                edge_map->edges[i][j] = EDGE_MAP_NULL_ID;
             }
         }
     }
@@ -33,7 +33,7 @@ void edge_map_print(edge_map_t* edge_map)
     }
 }
 
-void edge_map_get_slave_meta(edge_map_t* edge_map, int my_id, int res[2])
+void edge_map_get_slave_meta(edge_map_t* edge_map, int my_id, int res[SLAVE_META_SIZE])
 {
     int i, j;
     for (i = 0; i < edge_map->num_stations; i++) {
