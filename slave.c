@@ -22,7 +22,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     int src = slave_meta[SLAVE_META_SRC];
     int dst = slave_meta[SLAVE_META_DST];
     int transit_time = map.stations[src][dst];
-    printf("edge id: %d, src: %d, dst: %d\n", my_id, src, dst);
+    // printf("edge id: %d, src: %d, dst: %d\n", my_id, src, dst);
 
     int num_to_receive = 0;
     for (i = 0; i < map.num_stations; i++) {
@@ -46,70 +46,83 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     current_train.id = TRAIN_NULL_ID;
     int current_train_done_time = 0;
     int current_time = 0;
-    // Synchronise start
 
-    // If current train exists and is done
-    if (current_train.id != TRAIN_NULL_ID && current_train_done_time == current_time) {
-        enqueue_train_for_departure(current_train, &exit_queue);
-    }
+    commstat_t commstat;
 
-    // If no current train and there's a train waiting to enter
-    if (current_train.id == TRAIN_NULL_ID && queue_is_empty(&enter_queue) == false) {
-        pair_t enter_queue_head = queue_dequeue(&enter_queue);
-        current_train = enter_queue_head.train;
-        current_train_done_time = current_time + transit_time;
-        // inform master
-    }
-
-    // Spawn trains and report to master if necessary
-    if (should_spawn == true) {
-        int spawned = spawn_trains(spawn_infos, trains_spawned);
-        if (spawned == 0) {
-            should_spawn = false;
+    while (true) {
+        // If current train exists and is done
+        if (current_train.id != TRAIN_NULL_ID && current_train_done_time == current_time) {
+            enqueue_train_for_departure(current_train, &exit_queue, &commstat, dst, MASTER_ID);
         }
-        for (i = 0; i < spawned; i++) {
-            enqueue_train_for_departure(trains_spawned[i], &exit_queue);
+
+        // If no current train and there's a train waiting to enter
+        if (current_train.id == TRAIN_NULL_ID && queue_is_empty(&enter_queue) == false) {
+            pair_t enter_queue_head = queue_dequeue(&enter_queue);
+            current_train = enter_queue_head.train;
+            current_train_done_time = current_time + transit_time;
+            // inform master
+            commstat_init(&commstat, current_train.id, current_train.line_id, src, current_train.travelling_forward);
+            commstat_report_start_moving(&commstat, MASTER_ID);
         }
-    }
 
-    // If there is a train that needs to be sent to the next edge
-    if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time) {
-        train_t depart_train = queue_dequeue(&exit_queue).train;
-        int next_station = get_train_next_station(&depart_train, dst, lines);
-        int next_edge = edge_map.edges[dst][next_station];
-
-        train_send(&depart_train, next_edge, comm_slave);
-    }
-
-    // Send done signal to all edges I can send trains to.
-    for (i = 0; i < map.num_stations; i++) {
-        if (map.stations[dst][i] != 0) {
-            train_send(NULL, edge_map.edges[dst][i], comm_slave);
+        // Spawn trains and report to master if necessary
+        if (should_spawn == true) {
+            int spawned = spawn_trains(spawn_infos, trains_spawned);
+            if (spawned == 0) {
+                should_spawn = false;
+            }
+            for (i = 0; i < spawned; i++) {
+                enqueue_train_for_departure(trains_spawned[i], &exit_queue, &commstat, dst, MASTER_ID);
+            }
         }
-    }
+        printf("%d\n", my_id);
 
-    // Receive done signals from all edges that could possibly send trains to me
-    int received = 0;
-    while (received < num_to_receive) {
-        train_t train_buf;
-        int status = train_recv(&train_buf, MPI_ANY_SOURCE, comm_slave);
-        if (status == TRAIN_GOT_TRAIN) {
-            pair_t enter_pair;
-            enter_pair.train = train_buf;
-            queue_enqueue(&enter_queue, enter_pair);
-        } else {
-            received++;
+        // If there is a train that needs to be sent to the next edge
+        if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time) {
+            train_t depart_train = queue_dequeue(&exit_queue).train;
+            int next_station = get_train_next_station(&depart_train, dst, lines);
+            int next_edge = edge_map.edges[dst][next_station];
+
+            train_send(&depart_train, next_edge, comm_slave);
         }
-    }
 
-    // report to master done
-    // advance time
+        // Send done signal to all edges I can send trains to.
+        for (i = 0; i < map.num_stations; i++) {
+            if (map.stations[dst][i] != 0) {
+                train_send(NULL, edge_map.edges[dst][i], comm_slave);
+            }
+        }
+        // printf("%d\n", my_id);
+
+        // Receive done signals from all edges that could possibly send trains to me
+        int received = 0;
+        while (received < num_to_receive) {
+            train_t train_buf;
+            int status = train_recv(&train_buf, MPI_ANY_SOURCE, comm_slave);
+            if (status == TRAIN_GOT_TRAIN) {
+                pair_t enter_pair;
+                enter_pair.train = train_buf;
+                queue_enqueue(&enter_queue, enter_pair);
+            } else {
+                received++;
+            }
+        }
+
+        commstat_report_end_comm(MASTER_ID);
+        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Bcast(&current_time, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
+        if (current_time == SHUTDOWN)
+            break;
+        // report to master done
+        // advance time
+    }
 }
 
-void enqueue_train_for_departure(train_t train, queue_t* exit_queue)
+void enqueue_train_for_departure(train_t train, queue_t* exit_queue, commstat_t* commstat, int station_id, int slaves)
 {
     // request depart time from master;
-    int depart_time = 0;
+    commstat_init(commstat, train.id, train.line_id, station_id, train.travelling_forward);
+    int depart_time = commstat_report_arrived(commstat, MASTER_ID);
     pair_t done_pair;
     done_pair.time = depart_time;
     done_pair.train = train;

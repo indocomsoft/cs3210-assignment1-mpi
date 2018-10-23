@@ -18,10 +18,10 @@ int main(int argc, char** argv)
     slaves = nprocs - 1;
 
     if (my_id == MASTER_ID) {
-        fprintf(stderr, " +++ Process %d is master\n", my_id);
+        // fprintf(stderr, " +++ Process %d is master\n", my_id);
         master(my_id, slaves);
     } else {
-        fprintf(stderr, " --- Process %d is slave\n", my_id);
+        // fprintf(stderr, " --- Process %d is slave\n", my_id);
         slave(my_id, slaves, comm_slave);
     }
     MPI_Finalize();

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "commstat.h"
 #include "input.h"
 #include "line.h"
 #include "map.h"
@@ -20,6 +21,6 @@
 
 void slave(int my_id, int slaves, MPI_Comm comm);
 int get_train_next_station(train_t* train, int station_id, line_t* lines[LINE_NUM_LINES]);
-void enqueue_train_for_departure(train_t train, queue_t* exit_queue);
+void enqueue_train_for_departure(train_t train, queue_t* exit_queue, commstat_t* commstat, int station_id, int slaves);
 
 #endif

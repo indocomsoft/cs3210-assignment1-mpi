@@ -6,7 +6,7 @@ CC := mpicc
 CFLAGS := -g -Wall ${defs}
 
 CXX := mpicc
-# LDFLAGS :=  -fopenmp -pthread -lm
+LDFLAGS := -lm
 
 srcfiles := $(shell find . -name "*.c")
 objects  := $(patsubst %.c, %.o, $(srcfiles))
@@ -14,7 +14,7 @@ objects  := $(patsubst %.c, %.o, $(srcfiles))
 all: $(appname)
 
 $(appname): $(objects)
-	$(CXX) $(LDFLAGS) -o $(appname) $(objects)
+	$(CXX) $(LDFLAGS) -o $(appname) $(objects) ${LDFLAGS}
 
 clean:
 	rm -f $(objects)

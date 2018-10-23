@@ -5,6 +5,8 @@
 #define COMMSTAT_START_MOVING 1
 #define COMMSTAT_ARRIVED 2
 
+#define SHUTDOWN -1
+
 typedef struct raw_commstat_t commstat_t;
 
 #include "timekeeper.h"

@@ -104,6 +104,12 @@ int** build_edge_to_src_dst_memo_table(edge_map_t* edge_map, int slaves)
         result[i] = (int*)malloc(SLAVE_META_SIZE * sizeof(int));
         edge_map_get_slave_meta(edge_map, i, result[i]);
     }
+#ifdef DEBUG
+    for (i = 0; i < slaves; i++) {
+        printf("%d: %d, %d\n", i, result[i][0], result[i][1]);
+    }
+#endif
+
     return result;
 }
 
@@ -171,11 +177,18 @@ void master(int my_id, int slaves)
     master_state_t state;
     master_state_init(&state, input, slaves);
 
-    while (state.time < input->ticks) {
+    while (state.time >= 0) {
         receive_commstats(&state);
         print_time_tick_stats(&state);
         MPI_Barrier(MPI_COMM_WORLD);
         state.time++;
+
+        // Quick and dirty shutdown signal
+        if (state.time >= input->ticks) {
+            state.time = SHUTDOWN;
+        }
+        MPI_Bcast(&state.time, 1, MPI_INT, MASTER_ID, MPI_COMM_WORLD);
     }
+
     input_print_stats(input);
 }
