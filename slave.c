@@ -75,7 +75,8 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     // If there is a train that needs to be sent to the next edge
     if (queue_is_empty(&exit_queue) == false && queue_head(&exit_queue).time == current_time) {
         train_t depart_train = queue_dequeue(&exit_queue).train;
-        int next_edge = get_train_next_edge(&depart_train, dst, lines);
+        int next_station = get_train_next_station(&depart_train, dst, lines);
+        int next_edge = edge_map.edges[dst][next_station];
 
         train_send(&depart_train, next_edge, comm_slave);
     }
@@ -115,7 +116,7 @@ void enqueue_train_for_departure(train_t train, queue_t* exit_queue)
     queue_enqueue(exit_queue, done_pair);
 }
 
-int get_train_next_edge(train_t* train, int station_id, line_t* lines[LINE_NUM_LINES])
+int get_train_next_station(train_t* train, int station_id, line_t* lines[LINE_NUM_LINES])
 {
     int i;
     line_t* line = lines[train->line_id];

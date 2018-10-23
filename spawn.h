@@ -20,6 +20,7 @@ struct raw_spawn_info_t {
     int count;
     int num_trains;
     bool forward;
+    int base_train_id;
 };
 
 bool spawn_get_spawn_info(spawn_info_t spawn_infos[LINE_NUM_LINES], line_t* lines[LINE_NUM_LINES], int src, int dst);
