@@ -177,4 +177,5 @@ void master(int my_id, int slaves)
         MPI_Barrier(MPI_COMM_WORLD);
         state.time++;
     }
+    input_print_stats(input);
 }
