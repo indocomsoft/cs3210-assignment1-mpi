@@ -2,6 +2,10 @@
 
 #define LINE_NUM_INT_FIELDS 3
 
+#define NUM_STATIONS 0
+#define NUM_TRAINS 1
+#define START_TRAIN_ID 2
+
 void line_broadcast_receive(line_t* lines[LINE_NUM_LINES], int source)
 {
     int i;
@@ -27,9 +31,9 @@ void line_broadcast_receive_one(line_t* line, int source)
 
     // num_stations, num_trains, start_train_id
     MPI_Bcast((void*)&int_buf, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);
-    line->num_stations = int_buf[0];
-    line->num_trains = int_buf[1];
-    line->start_train_id = int_buf[2];
+    line->num_stations = int_buf[NUM_STATIONS];
+    line->num_trains = int_buf[NUM_TRAINS];
+    line->start_train_id = int_buf[START_TRAIN_ID];
 
     line->stations = (int*)malloc(sizeof(int) * line->num_stations);
 
@@ -44,9 +48,9 @@ void line_broadcast_send_one(line_t* line, int source)
 {
     int int_buf[LINE_NUM_INT_FIELDS];
 
-    int_buf[0] = line->num_stations;
-    int_buf[1] = line->num_trains;
-    int_buf[2] = line->start_train_id;
+    int_buf[NUM_STATIONS] = line->num_stations;
+    int_buf[NUM_TRAINS] = line->num_trains;
+    int_buf[START_TRAIN_ID] = line->start_train_id;
 
     // num_stations, num_trains, start_train_id
     MPI_Bcast((void*)&int_buf, LINE_NUM_INT_FIELDS, MPI_INT, source, MPI_COMM_WORLD);

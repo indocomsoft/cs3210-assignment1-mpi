@@ -36,19 +36,19 @@ void input_init(input_t* input)
     }
 
     // GREEN LINE
-    input->lines[0] = (line_t*)malloc(sizeof(line_t));
-    line_init(input->lines[0], input);
-    input->lines[0]->id = 'g';
+    input->lines[LINE_GREEN] = (line_t*)malloc(sizeof(line_t));
+    line_init(input->lines[LINE_GREEN], input);
+    input->lines[LINE_GREEN]->id = 'g';
 
     // YELLOW LINE
-    input->lines[1] = (line_t*)malloc(sizeof(line_t));
-    line_init(input->lines[1], input);
-    input->lines[1]->id = 'y';
+    input->lines[LINE_YELLOW] = (line_t*)malloc(sizeof(line_t));
+    line_init(input->lines[LINE_YELLOW], input);
+    input->lines[LINE_YELLOW]->id = 'y';
 
     // BLUE LINE
-    input->lines[2] = (line_t*)malloc(sizeof(line_t));
-    line_init(input->lines[2], input);
-    input->lines[2]->id = 'b';
+    input->lines[LINE_BLUE] = (line_t*)malloc(sizeof(line_t));
+    line_init(input->lines[LINE_BLUE], input);
+    input->lines[LINE_BLUE]->id = 'b';
 
     // TICKS
     scanf("%d\n", &(input->ticks));
@@ -62,14 +62,14 @@ void input_init(input_t* input)
         sscanf(next, "%d", &(input->num_trains[i]));
         i++;
     }
-    input->lines[0]->num_trains = input->num_trains[0];
-    input->lines[0]->start_train_id = 0;
-    input->lines[1]->num_trains = input->num_trains[1];
-    input->lines[1]->start_train_id = input->num_trains[0];
-    input->lines[2]->num_trains = input->num_trains[2];
-    input->lines[2]->start_train_id = input->num_trains[0] + input->num_trains[1];
+    input->lines[LINE_GREEN]->num_trains = input->num_trains[LINE_GREEN];
+    input->lines[LINE_GREEN]->start_train_id = 0;
+    input->lines[LINE_YELLOW]->num_trains = input->num_trains[LINE_YELLOW];
+    input->lines[LINE_YELLOW]->start_train_id = input->num_trains[LINE_GREEN];
+    input->lines[LINE_BLUE]->num_trains = input->num_trains[LINE_BLUE];
+    input->lines[LINE_BLUE]->start_train_id = input->num_trains[LINE_GREEN] + input->num_trains[LINE_YELLOW];
 
-    input->total_trains = input->lines[2]->start_train_id + input->lines[2]->num_trains;
+    input->total_trains = input->lines[LINE_BLUE]->start_train_id + input->lines[LINE_BLUE]->num_trains;
 
     // CLEANUP
     free(str_buf);
@@ -91,9 +91,9 @@ void input_print(input_t* input)
     }
     printf("\n");
 
-    line_print(input->lines[0]);
-    line_print(input->lines[1]);
-    line_print(input->lines[2]);
+    line_print(input->lines[LINE_GREEN]);
+    line_print(input->lines[LINE_YELLOW]);
+    line_print(input->lines[LINE_BLUE]);
 
     printf("%d\n", input->ticks);
 
@@ -112,12 +112,12 @@ void input_cleanup(input_t* input)
     free(input->station_names);
     map_cleanup(input->map);
     free(input->popularity);
-    free(input->lines[0]->stations);
-    free(input->lines[0]);
-    free(input->lines[1]->stations);
-    free(input->lines[1]);
-    free(input->lines[2]->stations);
-    free(input->lines[2]);
+    free(input->lines[LINE_GREEN]->stations);
+    free(input->lines[LINE_GREEN]);
+    free(input->lines[LINE_YELLOW]->stations);
+    free(input->lines[LINE_YELLOW]);
+    free(input->lines[LINE_BLUE]->stations);
+    free(input->lines[LINE_BLUE]);
     free(input->num_trains);
     free(input);
 }
@@ -126,11 +126,11 @@ void input_print_stats(input_t* input)
 {
     // Green
     printf("green: ");
-    line_print_stats(input->lines[0]);
+    line_print_stats(input->lines[LINE_GREEN]);
     // Yellow
     printf("yellow: ");
-    line_print_stats(input->lines[1]);
+    line_print_stats(input->lines[LINE_YELLOW]);
     // Blue
     printf("blue: ");
-    line_print_stats(input->lines[2]);
+    line_print_stats(input->lines[LINE_BLUE]);
 }
