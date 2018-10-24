@@ -1,0 +1,10 @@
+graph {
+Sengkang -- "Botanic Gardens"[color=blue,penwidth=3.0];
+Sengkang -- "Botanic Gardens"[label=6,color=green,penwidth=3.0];
+"Botanic Gardens" -- Mattar[color=blue,penwidth=3.0];
+"Botanic Gardens" -- Mattar[label=5,color=gold,penwidth=3.0];
+"Botanic Gardens" -- "Bukit Panjang"[color=gold,penwidth=3.0];
+"Botanic Gardens" -- "Bukit Panjang"[label=9,color=green,penwidth=3.0];
+"Bukit Panjang" -- Damai[color=gold,penwidth=3.0];
+"Bukit Panjang" -- Damai[label=8,color=green,penwidth=3.0];
+}
