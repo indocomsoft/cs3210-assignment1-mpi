@@ -28,7 +28,7 @@ void commstat_report_start_moving(commstat_t* stat, int slaves)
     buffer[TRAIN_ID] = stat->train_id;
     buffer[TRAIN_LINE_ID] = stat->train_line_id;
     buffer[STATION_ID] = stat->station_id;
-    buffer[TRAVELLING_FORWARD] = (int)stat->travelling_forward;
+    buffer[TRAVELLING_FORWARD] = stat->travelling_forward;
     MPI_Send(buffer, BUFFER_SIZE, MPI_INT, MASTER_ID, COMMSTAT_START_MOVING, MPI_COMM_WORLD);
 }
 
@@ -38,7 +38,7 @@ int commstat_report_arrived(commstat_t* stat, int slaves)
     buffer[TRAIN_ID] = stat->train_id;
     buffer[TRAIN_LINE_ID] = stat->train_line_id;
     buffer[STATION_ID] = stat->station_id;
-    buffer[TRAVELLING_FORWARD] = (int)stat->travelling_forward;
+    buffer[TRAVELLING_FORWARD] = stat->travelling_forward;
     int ready_time;
     MPI_Send(buffer, BUFFER_SIZE, MPI_INT, MASTER_ID, COMMSTAT_ARRIVED, MPI_COMM_WORLD);
     MPI_Recv(&ready_time, 1, MPI_INT, MASTER_ID, COMMSTAT_ARRIVED, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -58,7 +58,7 @@ void commstat_master_recv(commstat_t* stat, int res[COMMSTAT_RECV_NUM_FIELDS])
     stat->train_id = buffer[TRAIN_ID];
     stat->train_line_id = buffer[TRAIN_LINE_ID];
     stat->station_id = buffer[STATION_ID];
-    stat->travelling_forward = (bool)buffer[TRAVELLING_FORWARD];
+    stat->travelling_forward = buffer[TRAVELLING_FORWARD];
     res[COMMSTAT_MPI_TAG] = status.MPI_TAG;
     res[COMMSTAT_MPI_SOURCE] = status.MPI_SOURCE;
 }
