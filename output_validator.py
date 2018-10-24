@@ -17,7 +17,7 @@ def validate_one(f):
     print(f)
     train_history = defaultdict(list)
     prefix = f.split(".")[0]
-    contents = list(filter(lambda x: x, open(f, "r").readlines()))[:-3]
+    contents = list(filter(lambda x: x, open(f, "r").readlines()))[:-7]
     for row in contents:
         validate_row(row, train_history)
 
@@ -31,10 +31,17 @@ def validate_one(f):
         line_id = line_colors.index(k[0])
         train_id = int(k[1:])
 
-        if (train_id - start_train_ids[line_id]) % 2 == 0:
+        if (train_id) % 2 == 0:
             reverse = True
         else:
             reverse = False
+
+        # print(k)
+        # print(line_id)
+        # print(lines)
+        # print(reverse)
+        # print(start_train_ids)
+        # print(train_id)
 
         validate_train_steps(
             train_history[k], lines[line_id], station_map, reverse)
@@ -55,17 +62,23 @@ def validate_train_steps(steps, line, station_map, reverse):
 
         if len(step) == 2 and type(step) == tuple:
             src, dst = list(map(lambda x: int(x[1:]), step))
-            if src != prev:
-                print("Departed location does not match previous stop")
+            try:
+                if src != prev:
+                    print("Departed location does not match previous stop")
 
-            elif dst != find_next_station(line, src, reverse):
-                print("Train on wrong edge")
+                elif dst != find_next_station(line, src, reverse):
+                    print("Train on wrong edge")
 
-            elif station_map[src][dst] != duration and i != len(steps) - 1:
-                print("Train did not stop for correct duration")
-            else:
-                prev = dst
-                next_type = str
+                elif station_map[src][dst] != duration and i != len(steps) - 1:
+                    print("Train did not stop for correct duration")
+                else:
+                    prev = dst
+                    next_type = str
+            except Exception as e:
+                print(e)
+                print(line)
+                print(step)
+                exit()
 
         else:
             cur = int(step[1:])
@@ -108,9 +121,9 @@ def parse_input(contents):
 
     num_trains = [int(x) for x in contents[-1].split(",")]
 
-    start_train_ids = num_trains
-    start_train_ids[1] += num_trains[0]
-    start_train_ids[2] += num_trains[1]
+    start_train_ids = [0 for i in range(3)]
+    start_train_ids[1] = num_trains[0]
+    start_train_ids[2] = num_trains[1] + start_train_ids[1]
 
     return num_stations, station_map, lines, num_trains, start_train_ids
 
