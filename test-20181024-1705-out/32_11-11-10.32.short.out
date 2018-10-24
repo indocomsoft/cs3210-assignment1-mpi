@@ -1,36 +1,7 @@
--------------------------------------------------------
-Primary job  terminated normally, but 1 process returned
-a non-zero exit code.. Per user-direction, the job has been aborted.
--------------------------------------------------------
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
---------------------------------------------------------------------------
-mpirun detected that one or more processes exited with non-zero status, thus causing
-the job to be terminated. The first process to do so was:
+green: 11 trains -> 17.7, 93.2, 0.0
+yellow: 11 trains -> 17.7, 71.3, 0.0
+blue: 10 trains -> 20.3, 74.5, 0.3
 
-  Process name: [[1995,1],20]
-  Exit code:    1
---------------------------------------------------------------------------
-Command exited with non-zero status 1
-0.04user 0.08system 0:01.08elapsed 11%CPU (0avgtext+0avgdata 14740maxresident)k
-0inputs+16outputs (0major+4491minor)pagefaults 0swaps
+real	0m15.611s
+user	0m43.404s
+sys	1m56.516s

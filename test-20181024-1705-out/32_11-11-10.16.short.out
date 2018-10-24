@@ -1,26 +1,7 @@
--------------------------------------------------------
-Primary job  terminated normally, but 1 process returned
-a non-zero exit code.. Per user-direction, the job has been aborted.
--------------------------------------------------------
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/32_11-11-10: No such file or directory
---------------------------------------------------------------------------
-mpirun detected that one or more processes exited with non-zero status, thus causing
-the job to be terminated. The first process to do so was:
+green: 11 trains -> 17.8, 97.0, 0.0
+yellow: 11 trains -> 17.7, 94.2, 0.0
+blue: 10 trains -> 20.5, 70.3, 0.3
 
-  Process name: [[1862,1],10]
-  Exit code:    1
---------------------------------------------------------------------------
-Command exited with non-zero status 1
-0.09user 0.08system 0:01.19elapsed 15%CPU (0avgtext+0avgdata 14772maxresident)k
-0inputs+16outputs (0major+7688minor)pagefaults 0swaps
+real	0m12.244s
+user	1m17.844s
+sys	2m23.888s

@@ -1,58 +1,7 @@
--------------------------------------------------------
-Primary job  terminated normally, but 1 process returned
-a non-zero exit code.. Per user-direction, the job has been aborted.
--------------------------------------------------------
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
-bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
---------------------------------------------------------------------------
-mpirun detected that one or more processes exited with non-zero status, thus causing
-the job to be terminated. The first process to do so was:
+green: 21 trains -> 27.3, 103.8, 0.4
+yellow: 21 trains -> 26.0, 183.3, 0.3
+blue: 22 trains -> 24.5, 119.6, 0.8
 
-  Process name: [[6870,1],20]
-  Exit code:    1
---------------------------------------------------------------------------
-Command exited with non-zero status 1
-0.12user 0.06system 0:01.23elapsed 14%CPU (0avgtext+0avgdata 14944maxresident)k
-0inputs+24outputs (0major+7557minor)pagefaults 0swaps
+real	0m39.227s
+user	3m33.636s
+sys	9m2.892s

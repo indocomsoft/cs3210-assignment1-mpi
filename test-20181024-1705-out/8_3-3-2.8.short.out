@@ -1,5 +1,7 @@
-green: 3 trains -> 22.6, 56.9, 0.5
-yellow: 3 trains -> 22.2, 59.0, 0.0
-blue: 2 trains -> 19.1, 50.8, 0.0
-0.90user 0.13system 0:01.16elapsed 89%CPU (0avgtext+0avgdata 14652maxresident)k
-0inputs+8240outputs (47major+15631minor)pagefaults 0swaps
+green: 3 trains -> 22.1, 59.6, 0.2
+yellow: 3 trains -> 21.9, 72.0, 0.0
+blue: 2 trains -> 18.8, 50.3, 0.0
+
+real	0m1.152s
+user	0m0.916s
+sys	0m0.172s
