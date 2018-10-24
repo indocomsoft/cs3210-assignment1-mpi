@@ -1,0 +1,7 @@
+green: 11 trains -> 17.7, 93.2, 0.0
+yellow: 11 trains -> 17.7, 71.3, 0.0
+blue: 10 trains -> 20.3, 74.5, 0.3
+
+real	0m15.611s
+user	0m43.404s
+sys	1m56.516s
