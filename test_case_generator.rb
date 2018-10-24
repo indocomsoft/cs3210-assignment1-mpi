@@ -116,7 +116,7 @@ Dir.mkdir(dir_name)
 
 [[3, 3, 2], [5, 5, 6], [11, 11, 10], [21, 21, 22]].each do |trains|
   n = trains.inject(&:+)
-  s = n / 2
+  s = n / 2 + 1
 
   puts n, s
 
