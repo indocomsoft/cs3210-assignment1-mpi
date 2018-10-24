@@ -24,15 +24,15 @@
 \section{Program Design}
 This train simulation is implemented in OpenMPI. Primary design considerations are:
 \begin{itemize}
-  \item Each edge is simulated by one process as required in the specifications.
-  \item There is a master process responsible for the following:
-    \begin{itemize}
-      \item Distribution of information (map, lines) to slave processes.
-      \item Keeping track of train states (travelling/stationary).
-      \item Keeping track of station door open/close times.
-      \item Synchronising time across all slaves.
-    \end{itemize}
-  \item Slave processes hold queues of trains and send them to each other.
+	\item Each edge is simulated by one process as required in the specifications.
+	\item There is a master process responsible for the following:
+	      \begin{itemize}
+		      \item Distribution of information (map, lines) to slave processes.
+		      \item Keeping track of train states (travelling/stationary).
+		      \item Keeping track of station door open/close times.
+		      \item Synchronising time across all slaves.
+	      \end{itemize}
+	\item Slave processes hold queues of trains and send them to each other.
 \end{itemize}
 
 \subsection*{Assumptions}
@@ -53,30 +53,39 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 \section{Points to Note / Implementation Details}
 \begin{itemize}
 	\item Current simulation time needs to be shared across all processes. In addition, time can only be advanced after all threads have completed the actions to be done in the current tick.
-    \begin{itemize}
-      \item \textbf{Implication}: Explicit synchronisation messages need to be sent between master and slaves before and after the advancement of time.
-    \end{itemize}
-  \item Each slave process maintains two queues of trains. The first queue contains the trains that are waiting to enter the edge. The second queue contains the trains that are waiting at the next station but have yet to close their doors.
-  \item The logic for each slave process at each tick is as follows:
-    \begin{itemize}
-      \item If a current train is occupying the edge and it can leave at the current time, the process will query master to find out when this train will finish closing its doors. The edge will then be marked as available.
-      \item If there are trains waiting to access the edge, the process will dequeue the first one and set it as the current train.
-      \item
-
-    \end{itemize}
-	\item Each train is a finite state machine with 4 states: \texttt{OPEN\_DOOR}, \texttt{CLOSE\_DOOR}, \texttt{DEPART} and \texttt{ARRIVE}.
-	\item Each train keeps track of its next action time (time for it to change to the next state), and actions to be completed within the current tick are performed in a \mintinline{C}{while} loop.
-	\item There is a \mintinline{C}{#pragma omp barrier} to ensure that all threads exit the \mintinline{C}{while} loop before time is advanced.
-	\item The advancement of time is done in a \mintinline{C}{#pragma omp single} block to ensure that it is only performed by one thread. In addition, \mintinline{C}{#pragma omp single} has an implicit barrier at the end of the block so this prevents other threads from entering the next iteration of the \mintinline{C}{while} loop until the advancement of time is complete.
-	\item Certain resources i.e. train tracks, door-opening rights are limited, and only one train may access them at any time.
+	      \begin{itemize}
+		      \item \textbf{Implication}: Explicit synchronisation messages need to be sent between master and slaves before and after the advancement of time.
+	      \end{itemize}
+	\item Each slave process maintains two queues of trains. The first queue contains the trains that are waiting to enter the edge (\textit{entry queue}). The second queue contains the trains that are waiting (arrived and/or door open) at the next station but have yet to close their doors, and the time at which they would close their doors (\textit{exit queue}).
+	      \begin{itemize}
+		      \item For convenience, the same queue implementation is used for both queues. \textit{Entry queue}'s elements simply have garbage values for their second element.
+	      \end{itemize}
+	\item The logic for each slave process at each tick is as follows:
 	      \begin{enumerate}
-		      \item One way to implement this is to have threads block when waiting to access such resources. However, this would interfere with the way we have chosen to implement time within this simulation. Blocked threads would prevent code after a \mintinline{C}{#pragma omp barrier} statement from being executed. We therefore decided \textbf{not} to go with this implementation.
-		      \item An alternative way to implement is to have a queue of trains requesting access to such resources. At each tick, each train would check whether it is at the head of the queue, and if so, it will be able to access the resource. We realised that it will also be necessary to store the time at which a train would be able to gain access to the resource, since our simulation time advances in integer increments, but door open time may have a fractional value. Upon further consideration, we realised that this design could be simplified.
-		      \item The key insight we arrived at is that any train waiting for access to a resource only needs to know the next time said resource will be available. Since this system does not permit a train to give up waiting for a resource, this can be implemented simply with a thread-safe timekeeper object. When a train requests access to a resource, it tells the timekeeper how much time it will occupy the resource for. The timekeeper will then inform the train of the time when the train can access the resource, and update its internal next available time. This is the implementation we decided to go with. In other words, we are implementing an implicit queue for a First-Come-First-Serve (FCFS) scheduling policy.
+		      \item If a current train is occupying the edge and it can leave at the current time, the process will query master to find out when this train will finish closing its doors. The process will then add this train and the time received into its \textit{exit queue}. The edge will then be marked as available.
+		      \item If there are trains waiting to access the edge, the process will dequeue the first one and set it as the current train.
+		      \item If the slave process should spawn trains for any of the lines its edge falls on, it will do so, query master for their door closing time, and enqueue them (see step 1 above).
+		      \item If the train at the head of \textit{exit queue} can close its doors at the \textbf{next} tick, the train is sent to the process containing the next edge that it should traverse.
+		            \begin{itemize}
+			            \item Since adjacent edges would only receive these trains at step 6, trains sent at this step would prematurely begin traversing the next edge.
+			            \item This ensures that before step 2, every slave process already holds all trains that can begin traversing the edge (if the edge is unoccupied).
+		            \end{itemize}
+		      \item The slave process sends \textit{"no more trains"} messages to all adjacent edges.
+		      \item The slave process waits for messages from all adjacent edges. If a train is sent, it is enqueued into the \textit{entry queue}. When \textit{"no more trains"} messages are received from all adjacent edges, this step is complete.
+		      \item The slave process informs master that it has completed all actions for the current tick.
+		      \item The slave process waits for an OpenMPI broadcast message that would advance time.
 	      \end{enumerate}
-	\item The next consideration is ensuring that system statistics are reported correctly. Since we assume that trains cannot open its doors for 0s, only one train can open its doors at each station per tick. There is therefore no potential race condition in the update of statistics. Nevertheless, we protected their critical sections with a \mintinline{C}{#pragma omp critical} block for additional safety.
-	\item Since print statements are not atomic, we wrapped them in a \mintinline{C}{#pragma omp critical} block to ensure that only one print operation executes at any one time.
-	\item Thread safe timekeeper objects have their critical sections protected by a \mintinline{C}{#pragma omp critical} block.
+	\item The logic for the master process at each tick is as follows:
+	      \begin{enumerate}
+		      \item The master process waits for messages from slave processes. If a request for next door close time is received, it computes the appropriate value, updates station statistics and sends it back. If it receives a message that all actions for the current tick have been completed, it increments a counter. When all slave processes have reported completion, this step is complete.
+		      \item The master process prints the per-tick output, and broadcasts the next tick time.
+		      \item If the simulation has reached completion, instead of broadcasting the next tick time, master will broadcast the shutdown signal.
+	      \end{enumerate}
+	\item The generic \mintinline{C}{MPI_Send} is used for slave-slave communication. Since messages are small, they are buffered and do not cause any deadlock. Deadlock does not occur when running all test cases in the lab. However, in the event that \mintinline{C}{MPI_Send} is not buffered and deadlock occurs, this can be resolved in the following ways:
+	      \begin{itemize}
+		      \item Non-blocking sends can be used for slave steps 4-5 and \mintinline{C}{MPI_Wait} called after slave step 6. This assumes that the non-blocking send will make process in the background even before \mintinline{C}{MPI_Wait} is called.
+		      \item Alternatively, a window can be created via \mintinline{C}{MPI_Win_create}. All information to be communicated in slave steps 4-5 will be written to its own window. When all slave processes have finished updating their own window (synchronised with \mintinline{C}{MPI_Barrier}), \mintinline{C}{MPI_Get} calls can be used in slave step 6 to obtain the relevant information.
+	      \end{itemize}
 \end{itemize}
 
 \section{Execution Time}
