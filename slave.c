@@ -53,6 +53,7 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
         // If current train exists and is done
         if (current_train.id != TRAIN_NULL_ID && current_train_done_time == current_time) {
             enqueue_train_for_departure(current_train, &exit_queue, &commstat, dst, MASTER_ID);
+            current_train.id = TRAIN_NULL_ID;
         }
 
         // If no current train and there's a train waiting to enter
@@ -81,7 +82,6 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
             train_t depart_train = queue_dequeue(&exit_queue).train;
             int next_station = get_train_next_station(&depart_train, dst, lines);
             int next_edge = edge_map.edges[dst][next_station];
-
             train_send(&depart_train, next_edge, comm_slave);
         }
 
