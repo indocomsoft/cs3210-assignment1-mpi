@@ -16,8 +16,6 @@ void slave(int my_id, int slaves, MPI_Comm comm_slave)
     edge_map_t edge_map;
     edge_map_init(&edge_map, &map);
 
-    edge_map_print(&edge_map);
-
     int slave_meta[SLAVE_META_SIZE];
     edge_map_get_slave_meta(&edge_map, my_id, slave_meta);
 
