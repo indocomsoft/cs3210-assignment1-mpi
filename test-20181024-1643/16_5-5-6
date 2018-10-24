@@ -1,0 +1,16 @@
+8
+Newton,Damai,Bras Basah,Buona Vista,Bugis,Yew Tee,Farmway,Downtown
+0 1 0 0 0 6 5 0
+1 0 0 0 0 0 0 0
+0 0 0 0 0 0 2 0
+0 0 0 0 0 6 0 0
+0 0 0 0 0 3 0 0
+6 0 0 6 3 0 0 4
+5 0 2 0 0 0 0 0
+0 0 0 0 0 4 0 0
+0.7,1.0,0.3,0.3,0.7,0.8,0.9,0.8
+Bugis,Yew Tee,Downtown
+Bras Basah,Farmway,Newton,Yew Tee,Buona Vista
+Damai,Newton,Farmway,Bras Basah
+10000
+5,5,6
