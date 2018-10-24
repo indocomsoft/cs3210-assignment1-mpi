@@ -133,3 +133,14 @@ void line_print_stats(line_t* line)
     avg_min_time = sum_min_time / (2 * (double)line->num_stations);
     printf("%d trains -> %.1lf, %.1lf, %.1lf\n", line->num_trains, avg_avg_time, avg_max_time, avg_min_time);
 }
+
+int line_find_station_index(line_t* line, int station_id)
+{
+    int i = 0;
+    for (i = 0; i < line->num_stations; i++) {
+        if (line->stations[i] == station_id) {
+            return i;
+        }
+    }
+    return -1;
+}

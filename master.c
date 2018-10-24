@@ -70,7 +70,7 @@ void receive_commstats(master_state_t* state)
                 duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
                 start = timekeeper_increase_by(&state->station_timekeepers[station_id], duration, state->time);
                 commstat_master_send_ready_time(start + duration, edge_id);
-                station_stat_open_door(&state->input->lines[commstat.train_line_id]->stats[station_id], start, duration, commstat.travelling_forward);
+                station_stat_open_door(&state->input->lines[commstat.train_line_id]->stats[line_find_station_index(state->input->lines[commstat.train_line_id], station_id)], start, duration, commstat.travelling_forward);
                 break;
             }
         }

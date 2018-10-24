@@ -30,4 +30,11 @@ void line_broadcast_send(line_t** lines, int source);
 void line_broadcast_receive_one(line_t* line, int source);
 void line_broadcast_send_one(line_t* line, int source);
 
+/**
+ * Returns the index of a given station_id.
+ *
+ * Returns -1 if station_id not part of this line.
+ */
+int line_find_station_index(line_t* line, int station_id);
+
 #endif
