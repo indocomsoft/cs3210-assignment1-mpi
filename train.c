@@ -21,7 +21,7 @@ void train_send(train_t* train, int dest, MPI_Comm comm)
         tag = TRAIN_GOT_TRAIN;
         data[TRAIN_ID] = train->id;
         data[TRAIN_LINE_ID] = train->line_id;
-        data[TRAIN_TRAVELLING_FORWARD] = (int)train->travelling_forward;
+        data[TRAIN_TRAVELLING_FORWARD] = train->travelling_forward;
     }
     MPI_Send(data, TRAIN_NUM_FIELDS, MPI_INT, dest, tag, comm);
 }
@@ -33,6 +33,6 @@ int train_recv(train_t* train, int source, MPI_Comm comm)
     MPI_Recv(data, TRAIN_NUM_FIELDS, MPI_INT, source, MPI_ANY_TAG, comm, &status);
     train->id = data[TRAIN_ID];
     train->line_id = data[TRAIN_LINE_ID];
-    train->travelling_forward = (bool)data[TRAIN_NUM_FIELDS];
+    train->travelling_forward = data[TRAIN_TRAVELLING_FORWARD];
     return status.MPI_TAG;
 }
