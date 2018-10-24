@@ -1,0 +1,70 @@
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+[ubuntu-soctf-pdc-003:21150] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+--------------------------------------------------------------------------
+A system call failed during shared memory initialization that should
+not have.  It is likely that your MPI job will now either abort or
+experience performance degradation.
+
+  Local host:  ubuntu-soctf-pdc-003
+  System call: open(2) 
+  Error:       No such file or directory (errno 2)
+--------------------------------------------------------------------------
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+bash: cs3210-assignment1-mpi/test-20181024-1705/64_21-21-22: No such file or directory
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[6813,1],30]
+  Exit code:    1
+--------------------------------------------------------------------------
+[ubuntu-soctf-pdc-003:21142] 1 more process has sent help message help-opal-shmem-mmap.txt / sys call fail
+[ubuntu-soctf-pdc-003:21142] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+Command exited with non-zero status 1
+0.12user 0.06system 0:01.19elapsed 16%CPU (0avgtext+0avgdata 14940maxresident)k
+0inputs+24outputs (0major+7643minor)pagefaults 0swaps

@@ -1,0 +1,5 @@
+green: 5 trains -> 13.2, 42.7, 0.5
+yellow: 5 trains -> 18.6, 50.7, 0.2
+blue: 6 trains -> 7.0, 22.9, 0.2
+2.55user 2.81system 0:01.43elapsed 375%CPU (0avgtext+0avgdata 14988maxresident)k
+0inputs+15696outputs (102major+28357minor)pagefaults 0swaps
