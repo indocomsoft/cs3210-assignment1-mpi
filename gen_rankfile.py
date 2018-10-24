@@ -15,7 +15,7 @@ while total_cores <= 32:
     example = "rank 0=soctf-pdf-003 slot=0:0"
 
     with open(str(total_cores) + "rankfile", "w") as f:
-        for i in range(64):
+        for i in range(65):
             entry = entry_list[i % len(entry_list)]
             f.write("rank %d=" % (i) + entry + "\n")
 
