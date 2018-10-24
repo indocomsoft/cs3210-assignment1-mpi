@@ -11,7 +11,7 @@ physicalCpuCount=$([ $(uname) = 'Darwin' ] &&
                        lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l)
 
 num_edges=$(cat $1 | head -n1)
-processes=$(($num_edges * 2 + 1))
+processes=$((($num_edges - 1) * 2 + 1))
 echo $processes
 
 if [ $processes -gt $physicalCpuCount ]; then
