@@ -1,6 +1,6 @@
 appname := sim
 
-defs := -DDEBUG
+defs :=
 
 CC := mpicc
 CFLAGS := -g -Wall ${defs}
