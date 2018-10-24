@@ -20,7 +20,6 @@ struct raw_master_state_t {
     edge_map_t* edge_map;
     timekeeper_t* station_timekeepers;
     int** edge_to_src_dst;
-    int** train_line_id_index;
     int slaves;
     int time;
 };
@@ -44,20 +43,19 @@ void train_statuses_init(train_status_t* stat, input_t* input)
 void receive_commstats(master_state_t* state)
 {
     commstat_t commstat;
-    int i, station_id, duration, start, train_idx;
-    int res[2];
+    int i, station_id, duration, start, train_idx, tag, edge_id;
+    int res[COMMSTAT_RECV_NUM_FIELDS];
 
     i = 0;
 
     while (i < state->slaves) {
         commstat_master_recv(&commstat, res);
-        int tag = res[0];
-        int edge_id = res[1];
+        tag = res[COMMSTAT_MPI_TAG];
+        edge_id = res[COMMSTAT_MPI_SOURCE];
 
         if (tag == COMMSTAT_END_COMM) {
             i++;
         } else {
-            // train_idx = state->train_line_id_index[commstat.train_line_id][commstat.train_id];
             train_idx = commstat.train_id;
             state->stats[train_idx].spawned = true;
             switch (tag) {
@@ -69,39 +67,14 @@ void receive_commstats(master_state_t* state)
                 station_id = state->edge_to_src_dst[edge_id][SLAVE_META_DST];
                 state->stats[train_idx].is_travelling = false;
                 state->stats[train_idx].station_id = station_id;
-                // duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
-                duration = 2;
+                duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
                 start = timekeeper_increase_by(&state->station_timekeepers[station_id], duration, state->time);
                 commstat_master_send_ready_time(start + duration, edge_id);
-                station_stat_open_door(state->input->lines[commstat.train_line_id]->stats, start, duration, commstat.travelling_forward);
+                station_stat_open_door(&state->input->lines[commstat.train_line_id]->stats[station_id], start, duration, commstat.travelling_forward);
                 break;
             }
         }
     }
-
-    // for (i = 0; i < state->slaves; i++) {
-    //     int tag = commstat_master_recv(&commstat, i);
-    //     while (tag != COMMSTAT_END_COMM) {
-    //         train_idx = state->train_line_id_index[commstat.train_line_id][commstat.train_id];
-    //         state->stats[train_idx].spawned = true;
-    //         switch (tag) {
-    //         case COMMSTAT_START_MOVING:
-    //             state->stats[train_idx].is_travelling = true;
-    //             state->stats[train_idx].edge_id = i;
-    //             break;
-    //         case COMMSTAT_ARRIVED:
-    //             station_id = state->edge_to_src_dst[i][SLAVE_META_DST];
-    //             state->stats[train_idx].is_travelling = false;
-    //             state->stats[train_idx].station_id = station_id;
-    //             duration = (int)ceil((double)state->input->popularity[station_id] * (rand() % 10 + 1));
-    //             start = timekeeper_increase_by(&state->station_timekeepers[station_id], duration, state->time);
-    //             commstat_master_send_ready_time(start + duration, i);
-    //             station_stat_open_door(state->input->lines[commstat.train_line_id]->stats, start, duration, commstat.travelling_forward);
-    //             break;
-    //         }
-    //         tag = commstat_master_recv(&commstat, i);
-    //     }
-    // }
 }
 
 void print_time_tick_stats(master_state_t* state)
@@ -148,20 +121,6 @@ int** build_edge_to_src_dst_memo_table(edge_map_t* edge_map, int slaves)
     return result;
 }
 
-int** build_train_line_id_index_memo_table(input_t* input)
-{
-    int i, j, counter = 0;
-    int** result = (int**)malloc(LINE_NUM_LINES * sizeof(int*));
-    for (i = 0; i < LINE_NUM_LINES; i++) {
-        result[i] = (int*)malloc(input->num_trains[i] * sizeof(int));
-        for (j = 0; j < input->num_trains[i]; j++) {
-            result[i][j] = counter;
-            counter++;
-        }
-    }
-    return result;
-}
-
 void master_state_init(master_state_t* state, input_t* input, int slaves)
 {
     state->input = input;
@@ -181,7 +140,6 @@ void master_state_init(master_state_t* state, input_t* input, int slaves)
     state->station_timekeepers = station_timekeepers;
 
     state->edge_to_src_dst = build_edge_to_src_dst_memo_table(edge_map, slaves);
-    state->train_line_id_index = build_train_line_id_index_memo_table(input);
 }
 
 void master(int my_id, int slaves)

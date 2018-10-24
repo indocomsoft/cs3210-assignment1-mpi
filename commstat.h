@@ -5,6 +5,10 @@
 #define COMMSTAT_START_MOVING 1
 #define COMMSTAT_ARRIVED 2
 
+#define COMMSTAT_RECV_NUM_FIELDS 2
+#define COMMSTAT_MPI_TAG 0
+#define COMMSTAT_MPI_SOURCE 1
+
 #define SHUTDOWN -1
 
 typedef struct raw_commstat_t commstat_t;
@@ -55,6 +59,6 @@ void commstat_master_send_ready_time(int ready_time, int slave_id);
  *
  * Returns either COMMSTAT_END_COMM, COMMSTAT_START_MOVING, or COMMSTAT_ARRIVED
  */
-void commstat_master_recv(commstat_t* stat, int res[2]);
+void commstat_master_recv(commstat_t* stat, int res[COMMSTAT_RECV_NUM_FIELDS]);
 
 #endif
