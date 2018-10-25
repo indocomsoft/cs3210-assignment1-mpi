@@ -127,6 +127,13 @@ Below you can find a sample input and visualisation of the adjacency matrix and 
 \end{center}
 \newpage
 \subsection{Raw Data Collected}
+Legend:
+\begin{itemize}
+  \item num\_edge = Number of edges
+  \item num\_trains = Number of trains
+  \item num\_cores = Number of cores
+  \item short = TRUE means no per-tick statistics is printed
+\end{itemize}
 \begin{center}
 	\begin{tabular}{r r r | r}
 		num\_edge / num\_trains & num\_cores & short & time    \\
@@ -168,6 +175,35 @@ Below you can find a sample input and visualisation of the adjacency matrix and 
 		64                      & NA         & FALSE & 8.345   \\
 	\end{tabular}
 	\captionof{table}{Data collected}
+\end{center}
+
+\subsection{Comparison Summary}
+\begin{center}
+  \begin{tabular}{r | r r r r}
+    \textbf{Number of cores} & 8 edges/trains & 16 edges/trains & 32 edges/trains & 64 edges/trains \\ \hline
+    thread & 0.067 & 0.076 & 1.197 & 2.772 \\ \hline
+    8 & 1.152 & 1.466 & 2.004 & 3.64 \\
+    16 &  & 10.216 & 12.244 & 382.949 \\
+    32 &  &  & 15.611 & 39.227 \\
+  \end{tabular}
+  \captionof{table}{Summarised Comparison when per-tick statistics are not printed}
+\end{center}
+
+\begin{center}
+  \includegraphics[width=0.8\linewidth]{comparison-chart}
+  \captionof{figure}{The comparison summary plotted}
+\end{center}
+
+\subsection{Additional results}
+We also tried running with 1000 trains for each line using the the map containing 64 edges. For fair comparison, we also disabled per-tick output. You can find the results below.
+
+\begin{center}
+  \begin{tabular}{l | r}
+    Configuration & time \\ \hline
+    65 processes locally & 2.833 \\
+    65 proceses over 32 cores in 4 nodes & 42.253 \\
+    Multithreaded & 127.469 \\
+  \end{tabular}
 \end{center}
 
 \section{Discussion}
