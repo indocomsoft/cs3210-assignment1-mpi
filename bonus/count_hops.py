@@ -8,7 +8,7 @@ def count():
     for f in files:
         fn = f[:-4]
         res = count_one(f)
-        print(fn, res)
+        print("%s,%d"%(fn, res))
 
 
 def count_one(f):
