@@ -32,7 +32,7 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 		      \item Keeping track of station door open/close times.
 		      \item Synchronising time across all slaves.
 	      \end{itemize}
-	\item Slave processes hold queues of trains and send them to each other.
+	\item Slave processes hold queues of trains and send them to each other, and reports to master whenever train states change.
 \end{itemize}
 
 \subsection*{Assumptions}
@@ -52,13 +52,13 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 
 \section{Points to Note / Implementation Details}
 \begin{itemize}
-	\item Current simulation time needs to be shared across all processes. In addition, time can only be advanced after all threads have completed the actions to be done in the current tick.
+	\item Current simulation time needs to be shared across all processes. In addition, time can only be advanced after all processes have completed the actions to be done in the current tick.
 	      \begin{itemize}
 		      \item \textbf{Implication}: Explicit synchronisation messages need to be sent between master and slaves before and after the advancement of time.
 	      \end{itemize}
 	\item Each slave process maintains two queues of trains. The first queue contains the trains that are waiting to enter the edge (\textit{entry queue}). The second queue contains the trains that are waiting (arrived and/or door open) at the next station but have yet to close their doors, and the time at which they would close their doors (\textit{exit queue}).
 	      \begin{itemize}
-		      \item For convenience, the same queue implementation is used for both queues. \textit{Entry queue}'s elements simply have garbage values for their second element.
+		      \item For convenience, the same queue implementation is used for both queues. The queue stores pairs where first element is the train and second element is the time to dequeue the train. \textit{Entry queue}'s elements simply have garbage values for their second element.
 	      \end{itemize}
 	\item The logic for each slave process at each tick is as follows:
 	      \begin{enumerate}
@@ -70,8 +70,8 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 			            \item Since adjacent edges would only receive these trains at step 6, trains sent at this step would prematurely begin traversing the next edge.
 			            \item This ensures that before step 2, every slave process already holds all trains that can begin traversing the edge (if the edge is unoccupied).
 		            \end{itemize}
-		      \item The slave process sends \textit{"no more trains"} messages to all adjacent edges.
-		      \item The slave process waits for messages from all adjacent edges. If a train is sent, it is enqueued into the \textit{entry queue}. When \textit{"no more trains"} messages are received from all adjacent edges, this step is complete.
+		      \item The slave process sends \textit{``no more trains''} messages to all adjacent edges.
+		      \item The slave process waits for messages from all adjacent edges. If a train is sent, it is enqueued into the \textit{entry queue}. When \textit{``no more trains''} messages are received from all adjacent edges, this step is complete.
 		      \item The slave process informs master that it has completed all actions for the current tick.
 		      \item The slave process waits for an OpenMPI broadcast message that would advance time.
 	      \end{enumerate}
