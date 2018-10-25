@@ -191,6 +191,7 @@ Legend:
 \end{center}
 
 \subsection{OpenMPI only}
+Using the each testcase, but with 22 trains on each line. Note that the absolute time here might be slower than the previous run because there are other processes running concurrently on the nodes.
 \begin{center}
 	\begin{tabular}{r r | r}
 		num\_edge & num\_cores & time   \\
@@ -208,24 +209,36 @@ Legend:
 		64        & 16         & 415.07 \\
 		64        & 32         & 264.41 \\
 	\end{tabular}
+  \captionof{table}{Results of running each test case with 22 trains on each line}
+  \label{table:openmpi}
 \end{center}
 
 \subsection{Additional results}
-We also tried running with 1000 trains for each line using the the map containing 64 edges. For fair comparison, we also disabled per-tick output. You can find the results below.
+We ran both OpenMP and OpenMPI implementations with 1000 trains for each line using the map containing 64 edges. For fair comparison, we also disabled per-tick output. Results are shown below:
 
 \begin{center}
 	\begin{tabular}{l | r}
 		Configuration                        & time    \\ \hline
 		65 processes locally                 & 2.833   \\
-		65 proceses over 32 cores in 4 nodes & 42.253  \\
-		Multithreaded                        & 127.469 \\
+		65 processes over 32 cores in 4 nodes & 42.253  \\
+		Multi-threaded                        & 127.469 \\
 	\end{tabular}
-	\captionof{table}{Results of running map for 64 edges with 1000 trains}
+	\captionof{table}{Results of running map for 64 edges with 1000 trains on each line}
 	\label{table:additional}
 \end{center}
 
 \section{Discussion}
+\subsection{Behaviour of the multi-process OpenMPI Implementation}
+We compare the execution time when running on maps with different number of edges but with the same number of trains (22 trains on each line). From Table \ref{table:openmpi}, the trend is that time is minimum when number of cores is 8, it increases to maximum when number of cores is 16, and then the time gets faster somewhat when number of cores is 32. Using 8 cores results in the shortest execution time; this is clearly due to all the cores being in the same node, resulting in OpenMPI using shared memory as message-passing mechanism. Thus, even when the number of edges increases, it is still much faster than when run with higher number of cores. The cost from lower throughput and higher latency message-passing mechanism via TCP outweighs the cost from higher context-switching due to running with lower core count.
+
+With regards to 16 cores being slower than 32 cores, we have a hypothesis to explain this. Firstly, using 16 cores might be the slowest due to bottleneck in the TCP connections over the network. When using 16 cores, the processes are running across 2 nodes, hence the network link between these 2 nodes might get saturated and packets are buffered or even dropped on the router. When using 32 cores, the processes are running across 4 nodes, alleviating the burden on any single link, thus the time is faster for 32 cores than 16 cores. Secondly, this is also worsened by the higher number of context switching when using 16 cores than using 32 cores.
+
+\subsection{Multi-process OpenMPI Implementation Vs. Multi-threaded OpenMP Implementation}
 We compare the multi-threaded OpenMP implementation against the multi-process OpenMPI implementation by using the same map and using the same number of trains with the per-tick statistics output disabled. From Table \ref{table:summary}, it is apparent that the multi-threaded implementation is faster. This is mainly because threads are much cheaper to create and context switch. It should also be noted that the timing for 8 cores is quite close to the multi-threaded implementation. This is because it is only running on 1 node and OpenMPI uses shared memory as a message-passing mechanism for 2 processes running on the same node which is much cheaper than TCP, OpenMPI's default message-passing mechanism across nodes.
+
+Nevertheless, despite the seemingly higher performance of the multi-threaded OpenMP implementation, there exists a case when the multi-process OpenMPI implementation will outperform the multi-threaded OpenMP implementation, namely when there are a large number of trains. As observed in Table \ref{table:summary}, running both implementations on a map of 64 edges with 100 trains on each line, the multi-process OpenMPI implementation is still the fastest, both when running on only 1 node, communicating via the higher throughput and lower latency shared memory; or even across multiple nodes, communicating via lower throughput and higher latency TCP connections.
+
+Thus, our conclusion is that the multi-process OpenMPI implementation is better when a large number of trains need to be simulated but the number of edges is relatively small, since each process represents an edge in the graph. Meanwhile, the multi-threaded OpenMPI implementation is better when a large map with a large number of edges need to be simulated but the number of trains is relatively small, since each thread represents a train. However, the multi-process OpenMPI Implementation is the more scalable solution since it can run across several nodes, thus it can support even larger maps just by adding more nodes in the computation of the simulation.
 
 \section{Bonus}
 
