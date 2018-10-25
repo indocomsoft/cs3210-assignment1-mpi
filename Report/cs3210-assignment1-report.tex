@@ -129,10 +129,10 @@ Below you can find a sample input and visualisation of the adjacency matrix and 
 \subsection{Raw Data Collected}
 Legend:
 \begin{itemize}
-  \item num\_edge = Number of edges
-  \item num\_trains = Number of trains
-  \item num\_cores = Number of cores
-  \item short = TRUE means no per-tick statistics is printed
+	\item num\_edge = Number of edges
+	\item num\_trains = Number of trains
+	\item num\_cores = Number of cores
+	\item short = TRUE means no per-tick statistics is printed
 \end{itemize}
 \begin{center}
 	\begin{tabular}{r r r | r}
@@ -179,31 +179,31 @@ Legend:
 
 \subsection{Comparison Summary}
 \begin{center}
-  \begin{tabular}{r | r r r r}
-    \textbf{Number of cores} & 8 edges/trains & 16 edges/trains & 32 edges/trains & 64 edges/trains \\ \hline
-    thread & 0.067 & 0.076 & 1.197 & 2.772 \\ \hline
-    8 & 1.152 & 1.466 & 2.004 & 3.64 \\
-    16 &  & 10.216 & 12.244 & 382.949 \\
-    32 &  &  & 15.611 & 39.227 \\
-  \end{tabular}
-  \captionof{table}{Summarised Comparison when per-tick statistics are not printed}
+	\begin{tabular}{r | r r r r}
+		\textbf{Number of cores} & 8 edges/trains & 16 edges/trains & 32 edges/trains & 64 edges/trains \\ \hline
+		thread                   & 0.067          & 0.076           & 1.197           & 2.772           \\ \hline
+		8                        & 1.152          & 1.466           & 2.004           & 3.64            \\
+		16                       &                & 10.216          & 12.244          & 382.949         \\
+		32                       &                &                 & 15.611          & 39.227          \\
+	\end{tabular}
+	\captionof{table}{Summarised Comparison when per-tick statistics are not printed}
 \end{center}
 
 \begin{center}
-  \includegraphics[width=0.8\linewidth]{comparison-chart}
-  \captionof{figure}{The comparison summary plotted}
+	\includegraphics[width=0.8\linewidth]{comparison-chart}
+	\captionof{figure}{The comparison summary plotted}
 \end{center}
 
 \subsection{Additional results}
 We also tried running with 1000 trains for each line using the the map containing 64 edges. For fair comparison, we also disabled per-tick output. You can find the results below.
 
 \begin{center}
-  \begin{tabular}{l | r}
-    Configuration & time \\ \hline
-    65 processes locally & 2.833 \\
-    65 proceses over 32 cores in 4 nodes & 42.253 \\
-    Multithreaded & 127.469 \\
-  \end{tabular}
+	\begin{tabular}{l | r}
+		Configuration                        & time    \\ \hline
+		65 processes locally                 & 2.833   \\
+		65 proceses over 32 cores in 4 nodes & 42.253  \\
+		Multithreaded                        & 127.469 \\
+	\end{tabular}
 \end{center}
 
 \section{Discussion}
@@ -224,7 +224,21 @@ We also observe another trend -- that the variance in execution time falls when 
 % \end{center}
 
 \section{Bonus}
-Starvation will never occur in the simulation program that we wrote. This is because to decide which train to open door or to be allowed to use a link next, we are using a queue to implement First-Come-First-Serve (FCFS) scheduler, or in the case of the train doors, an implicit queue through the timekeeper. As such, every train is assured access to the link or permission to open door after a long enough time. The assumptions are that no train open its doors or travel using the links indefinitely (which we believe are fair to make).
+
+We chose to find the minimum number of trains per line required to maximise throughput in the network. We measured throughput by parsing the simulation output and counting the number of edge traversals by the trains. This optimisation was done on the example input map.
+
+\subsection{Notes}
+\begin{itemize}
+	\item Every edge traversal is counted as 1 regardless of the time taken.
+	\item For convenience, partial traversals that occur because the simulation ends before they can complete are counted. This has an insignificant impact on the result since the maximum number of partial traversals is 16 (number of edges in the graph) while total traversals is in the order of \textasciitilde10,000.
+	\item Each line has the same number of trains regardless of line metrics (number of stations, distance between stations, station popularity)
+	\item Simulations were run for 10000 ticks.
+	\item All lines have the same number of trains.
+\end{itemize}
+
+\subsection{Results}
+EXCEL CHART BLAH BLAH
+
 
 \newpage
 \section{Appendix A: Ruby script used to generate test cases}
