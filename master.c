@@ -172,7 +172,7 @@ void master(int my_id, int slaves)
 
     while (state.time >= 0) {
         receive_commstats(&state);
-        // print_time_tick_stats(&state);
+        print_time_tick_stats(&state);
         MPI_Barrier(MPI_COMM_WORLD);
         state.time++;
 

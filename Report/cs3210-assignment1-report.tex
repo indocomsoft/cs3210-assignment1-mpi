@@ -38,7 +38,7 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 \subsection*{Assumptions}
 
 \begin{itemize}
-	\item Only one train can open its doors at each at any one time, regardless of direction.
+	\item Only one train can open its doors at each station at any one time, regardless of direction.
 	\item Train stations have infinite capacity for waiting trains.
 	\item Time units are discrete and can have no subdivisions
 	      \begin{itemize}
@@ -95,7 +95,7 @@ The Ruby script used to generate testcases for the previous OpenMP thread-based 
 
 This time round, since we are generating smaller maps too, we reconfigured the thresholds of the graph generation to require 3 termini (vertices with degree 1) and that each line must have at least 2 stations. Maximum distance (maximum edge weight) between stations is 9.
 
-The testcases all specified 10,000 time ticks. We ran testcases for 8, 16, 32, and 64 processes/threads. For the OpenMP programme, we ran it on 8, 16 and 32 cores using a rankfile across 4 Xeon nodes in the lab. We ran each test twice, once with the per-tick status output enabled, and another time with it disabled.
+The testcases all specified 10,000 time ticks. We ran testcases for 8, 16, 32, and 64 processes/threads. For the OpenMPI programme, we ran it on 8, 16 and 32 cores using a rankfile across 4 Xeon nodes in the lab. We ran each test twice, once with the per-tick status output enabled, and another time with it disabled.
 
 Below you can find a sample input and visualisation of the adjacency matrix and the train lines for 8 edges/trains. All testcase input files, machinefile, rankfile and testcase generator script can all be found in the Appendix.
 
