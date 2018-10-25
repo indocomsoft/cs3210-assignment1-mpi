@@ -182,6 +182,7 @@ Legend:
 		32                       &                &                 & 15.611          & 39.227          \\
 	\end{tabular}
 	\captionof{table}{Summarised Comparison when per-tick statistics are not printed}
+  \label{table:summary}
 \end{center}
 
 \begin{center}
@@ -200,24 +201,11 @@ We also tried running with 1000 trains for each line using the the map containin
 		Multithreaded                        & 127.469 \\
 	\end{tabular}
 	\captionof{table}{Results of running map for 64 edges with 1000 trains}
+  \label{table:additional}
 \end{center}
 
 \section{Discussion}
-It can be observed that the wall clock time taken for the simulation to complete increases as number of threads increases. This is because as number of threads increases, there is more contention of resources -- in our case contention for each train (thread) in using links (edges) between stations (vertices) and contention for each train in opening door at each station. We are managing this using an implicit queue through implementing a timekeeper to track the next allowed event to occur, protected by marking that section as critical. As such, for each link (edge) or station (vertex), only one train (thread) is able to register itself to the timekeeper at any given time -- others will have to wait.
-
-However, we have an interesting observation as well. Notice that the execution time behaves very differently when the number of threads is beyond the number of logical cores (20 cores). For small input size (100 ticks), when the number of threads is beyond the number of logical cores, the execution time actually falls. However, as input size gets larger (1,000 and 10,000 ticks), execution time increases. This can be explained that when the number of threads are below the number of logical cores, all the threads are running concurrently, resulting in more lock contention (not to be confused with resource contention). However, when number of threads is above the number of logical cores, the threads take turns to wake up and do work, resulting in less lock contention. For smaller input size, the lock contention time actually outweighs the execution time, resulting in the fall in execution time. However, for larger input size, there is a large overhead in context-switching which outweighs the effect of lock contention time. This is supported by the data we collected on number of context-switches for 100 ticks and 1,000 ticks.
-
-We also observe another trend -- that the variance in execution time falls when the number of threads exceed the number of logical cores. We currently have no explanation on this, but we suspect that the compiler does an optimisation when the number of threads exceed the number of logical cores.
-
-% \newpage
-% \begin{center}
-% 	\captionof{figure}{Number of context switches for 100 ticks}
-% 	\includegraphics[width=0.9\linewidth]{100-cs}
-% \end{center}
-% \begin{center}
-% 	\captionof{figure}{Number of context switches for 1,000 ticks}
-% 	\includegraphics[width=0.9\linewidth]{1000-cs}
-% \end{center}
+We compare the multi-threaded OpenMP implementation against the multi-process OpenMPI implementation by using the same map and using the same number of trains with the per-tick statistics output disabled. From Table \ref{table:summary}, it is apparent that the multi-threaded implementation is faster. This is mainly because threads are much cheaper to create and context switch. It should also be noted that the timing for 8 cores is quite close to the multi-threaded implementation. This is because it is only running on 1 node and OpenMPI uses shared memory as a message-passing mechanism for 2 processes running on the same node which is much cheaper than TCP, OpenMPI's default message-passing mechanism across nodes.
 
 \section{Bonus}
 
