@@ -15,9 +15,9 @@
 
 %\setlength\parindent{0pt}
 
-\title{Assignment 1 Report}
+\title{Assignment 1 Part 2 Report}
 \author{Julius Putra Tanu Setiaji (A0149787E), Chen Shaowei (A0110560Y)}
-\date{24 October 2018}
+\date{25 October 2018}
 
 \begin{document}
 \maketitle
@@ -28,10 +28,10 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 	\item Each edge is simulated by one process as required in the specifications.
 	\item There is a master process responsible for the following:
 	      \begin{itemize}
-		      \item Distribution of information (map, lines) to slave processes.
+		      \item Distribution of information (map, lines) to slave processes during initialisation.
 		      \item Keeping track of train states (travelling/stationary).
 		      \item Keeping track of station door open/close times.
-		      \item Synchronising time across all slaves.
+		      \item Synchronising current time tick across all slaves.
 	      \end{itemize}
 	\item Slave processes hold queues of trains and send them to each other, and reports to master whenever train states change.
 \end{itemize}
@@ -68,17 +68,17 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 		      \item If the slave process should spawn trains for any of the lines its edge falls on, it will do so, query master for their door closing time, and enqueue them (see step 1 above).
 		      \item If the train at the head of \textit{exit queue} can close its doors at the \textbf{next} tick, the train is sent to the process containing the next edge that it should traverse.
 		            \begin{itemize}
-			            \item Since adjacent edges would only receive these trains at step 6, trains sent at this step would prematurely begin traversing the next edge.
-			            \item This ensures that before step 2, every slave process already holds all trains that can begin traversing the edge (if the edge is unoccupied).
+			            \item Since adjacent edges would only receive these trains at step 6, trains sent at this step would not prematurely begin traversing the next edge.
+			            \item This ensures that before step 2, every slave process already holds all trains that can begin traversing the edge if the edge is unoccupied in its \textit{entry queue}.
 		            \end{itemize}
 		      \item The slave process sends \textit{``no more trains''} messages to all adjacent edges.
 		      \item The slave process waits for messages from all adjacent edges. If a train is sent, it is enqueued into the \textit{entry queue}. When \textit{``no more trains''} messages are received from all adjacent edges, this step is complete.
 		      \item The slave process informs master that it has completed all actions for the current tick.
-		      \item The slave process waits for an OpenMPI broadcast message that would advance time.
+		      \item The slave process waits for an OpenMPI broadcast message that would either advance time or signal shutdown.
 	      \end{enumerate}
 	\item The logic for the master process at each tick is as follows:
 	      \begin{enumerate}
-		      \item The master process waits for messages from slave processes. If a request for next door close time is received, it computes the appropriate value, updates station statistics and sends it back. If it receives a message that all actions for the current tick have been completed, it increments a counter. When all slave processes have reported completion, this step is complete.
+		      \item The master process waits for messages from slave processes. If a request for next door close time is received, it computes the appropriate value (when the train door will be closed), updates station statistics and sends it back. If it receives a message that all actions for the current tick have been completed, it increments a counter. When all slave processes have reported completion, this step is complete.
 		      \item The master process prints the per-tick output, and broadcasts the next tick time.
 		      \item If the simulation has reached completion, instead of broadcasting the next tick time, master will broadcast the shutdown signal.
 	      \end{enumerate}
@@ -187,11 +187,11 @@ Legend:
 
 \begin{center}
 	\includegraphics[width=0.8\linewidth]{comparison-chart}
-	\captionof{figure}{The comparison summary plotted}
+	\captionof{figure}{The comparison summary plotted (note the logarithmic vertical axis)}
 \end{center}
 
 \subsection{OpenMPI only}
-Using the each testcase, but with 22 trains on each line. Note that the absolute time here might be slower than the previous run because there are other processes running concurrently on the nodes.
+Using each of the testcase in the previous run, but with 22 trains on each line to ensure fairness. Note that the absolute time here might be slower than the previous run because there are other processes other than our train simulation running concurrently on the nodes.
 \begin{center}
 	\begin{tabular}{r r | r}
 		num\_edge & num\_cores & time   \\
@@ -380,7 +380,7 @@ Kent Ridge,Bartley,Joo Koon,Fernvale,Punggol Point,Newton,Toa Payoh,MacPherson,C
 21,21,22
 \end{minted}
 
-\section*{Appendix B: Ruby script used to generate test cases}
+\section*{Appendix B: Ruby code used to generate test cases}
 Below is the code listing of the ruby script used to generate test cases. Essentially, it does:
 \begin{enumerate}
 	\item Create a random adjacency matrix with diagonal = 0
