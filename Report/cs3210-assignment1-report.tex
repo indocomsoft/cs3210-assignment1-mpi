@@ -80,7 +80,7 @@ This train simulation is implemented in OpenMPI. Primary design considerations a
 		      \item The master process waits for messages from slave processes. If a request for next door close time is received, it computes the appropriate value, updates station statistics and sends it back. If it receives a message that all actions for the current tick have been completed, it increments a counter. When all slave processes have reported completion, this step is complete.
 		      \item The master process prints the per-tick output, and broadcasts the next tick time.
 		      \item If the simulation has reached completion, instead of broadcasting the next tick time, master will broadcast the shutdown signal.
-		  \end{enumerate}
+	      \end{enumerate}
 	\item The generic \mintinline{C}{MPI_Send} is used for slave-slave communication. Since messages are small, they are buffered and do not cause any deadlock. Deadlock does not occur when running all test cases in the lab. However, in the event that \mintinline{C}{MPI_Send} is not buffered and deadlock occurs, this can be resolved in the following ways:
 	      \begin{itemize}
 		      \item Non-blocking sends can be used for slave steps 4-5 and \mintinline{C}{MPI_Wait} called after slave step 6. This assumes that the non-blocking send will make process in the background even before \mintinline{C}{MPI_Wait} is called.
@@ -140,15 +140,15 @@ Legend:
 		\hline
 		8                       & 8          & TRUE  & 1.152   \\
 		8                       & 8          & FALSE & 1.229   \\
-		8                       & thread         & TRUE  & 0.067   \\
-		8                       & thread         & FALSE & 0.142   \\
+		8                       & thread     & TRUE  & 0.067   \\
+		8                       & thread     & FALSE & 0.142   \\
 		\hline
 		16                      & 8          & TRUE  & 1.466   \\
 		16                      & 8          & FALSE & 1.942   \\
 		16                      & 16         & TRUE  & 10.216  \\
 		16                      & 16         & FALSE & 10.270  \\
-		16                      & thread         & TRUE  & 0.076   \\
-		16                      & thread         & FALSE & 0.289   \\
+		16                      & thread     & TRUE  & 0.076   \\
+		16                      & thread     & FALSE & 0.289   \\
 		\hline
 		32                      & 8          & TRUE  & 2.004   \\
 		32                      & 8          & FALSE & 2.459   \\
@@ -156,8 +156,8 @@ Legend:
 		32                      & 16         & FALSE & 12.293  \\
 		32                      & 32         & TRUE  & 15.611  \\
 		32                      & 32         & FALSE & 15.843  \\
-		32                      & thread         & TRUE  & 1.197   \\
-		32                      & thread         & FALSE & 3.621   \\
+		32                      & thread     & TRUE  & 1.197   \\
+		32                      & thread     & FALSE & 3.621   \\
 		\hline
 		64                      & 8          & TRUE  & 3.640   \\
 		64                      & 8          & FALSE & 5.306   \\
@@ -165,8 +165,8 @@ Legend:
 		64                      & 16         & FALSE & 470.589 \\
 		64                      & 32         & TRUE  & 39.227  \\
 		64                      & 32         & FALSE & 46.471  \\
-		64                      & thread         & TRUE  & 2.772   \\
-		64                      & thread         & FALSE & 8.345   \\
+		64                      & thread     & TRUE  & 2.772   \\
+		64                      & thread     & FALSE & 8.345   \\
 	\end{tabular}
 	\captionof{table}{Data collected}
 \end{center}
