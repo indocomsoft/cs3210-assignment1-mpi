@@ -100,9 +100,9 @@ The testcases all specified 10,000 time ticks. We ran testcases for 8, 16, 32, a
 Below you can find a sample input and visualisation of the adjacency matrix and the train lines for 8 edges/trains. All testcase input files, machinefile, rankfile and testcase generator script can all be found in the Appendix.
 
 \begin{center}
-  \begin{minipage}{.65\textwidth}
-    \centering
-    \begin{minted}{text}
+	\begin{minipage}{.65\textwidth}
+		\centering
+		\begin{minted}{text}
     5
     Sengkang,Bukit Panjang,Mattar,Damai,Botanic Gardens
     0 0 0 0 6
@@ -117,54 +117,58 @@ Below you can find a sample input and visualisation of the adjacency matrix and 
     10000
     3,3,2
     \end{minted}
-    \captionof{figure}{Testcase for 8 edges/trains}
-  \end{minipage}
-  \begin{minipage}{0.33\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{map}
-    \captionof{figure}{Map of the train lines for 8 edges/trains}
-  \end{minipage}
+		\captionof{figure}{Testcase for 8 edges/trains}
+	\end{minipage}
+	\begin{minipage}{0.33\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{map}
+		\captionof{figure}{Map of the train lines for 8 edges/trains}
+	\end{minipage}
 \end{center}
 \newpage
 \subsection{Raw Data Collected}
-  \begin{center}
-    \begin{tabular}{r r r | r}
-      num\_edge / num\_trains & num\_cores & short & time \\\hline
-      8 & 8 & TRUE & 1.152 \\
-      8 & 8 & FALSE & 1.229 \\
-      8 & 16 & FALSE & 1.159 \\
-      8 & 16 & TRUE & 1.102 \\
-      8 & 32 & FALSE & 1.260 \\
-      8 & 32 & TRUE & 1.177 \\
-      8 & NA & TRUE & 0.067 \\
-      8 & NA & FALSE & 0.142 \\\hline
-      16 & 8 & FALSE & 1.942 \\
-      16 & 8 & TRUE & 1.466 \\
-      16 & 16 & FALSE & 10.270 \\
-      16 & 16 & TRUE & 10.216 \\
-      16 & 32 & TRUE & 12.080 \\
-      16 & 32 & FALSE & 12.336 \\
-      16 & NA & FALSE & 0.289 \\
-      16 & NA & TRUE & 0.076 \\\hline
-      32 & 8 & FALSE & 2.459 \\
-      32 & 8 & TRUE & 2.004 \\
-      32 & 16 & TRUE & 12.244 \\
-      32 & 16 & FALSE & 12.293 \\
-      32 & 32 & FALSE & 15.843 \\
-      32 & 32 & TRUE & 15.611 \\
-      32 & NA & FALSE & 3.621 \\
-      32 & NA & TRUE & 1.197 \\\hline
-      64 & 8 & FALSE & 5.306 \\
-      64 & 8 & TRUE & 3.640 \\
-      64 & 16 & FALSE & 470.589 \\
-      64 & 16 & TRUE & 382.949 \\
-      64 & 32 & TRUE & 39.227 \\
-      64 & 32 & FALSE & 46.471 \\
-      64 & NA & FALSE & 8.345 \\
-      64 & NA & TRUE & 2.772 \\
-    \end{tabular}
-    \captionof{table}{Data collected}
-  \end{center}
+\begin{center}
+	\begin{tabular}{r r r | r}
+		num\_edge / num\_trains & num\_cores & short & time    \\
+		\hline
+		8                       & 8          & TRUE  & 1.152   \\
+		8                       & 8          & FALSE & 1.229   \\
+		8                       & 16         & TRUE  & 1.102   \\
+		8                       & 16         & FALSE & 1.159   \\
+		8                       & 32         & TRUE  & 1.177   \\
+		8                       & 32         & FALSE & 1.260   \\
+		8                       & NA         & TRUE  & 0.067   \\
+		8                       & NA         & FALSE & 0.142   \\
+		\hline
+		16                      & 8          & TRUE  & 1.466   \\
+		16                      & 8          & FALSE & 1.942   \\
+		16                      & 16         & TRUE  & 10.216  \\
+		16                      & 16         & FALSE & 10.270  \\
+		16                      & 32         & TRUE  & 12.080  \\
+		16                      & 32         & FALSE & 12.336  \\
+		16                      & NA         & TRUE  & 0.076   \\
+		16                      & NA         & FALSE & 0.289   \\
+		\hline
+		32                      & 8          & TRUE  & 2.004   \\
+		32                      & 8          & FALSE & 2.459   \\
+		32                      & 16         & TRUE  & 12.244  \\
+		32                      & 16         & FALSE & 12.293  \\
+		32                      & 32         & TRUE  & 15.611  \\
+		32                      & 32         & FALSE & 15.843  \\
+		32                      & NA         & TRUE  & 1.197   \\
+		32                      & NA         & FALSE & 3.621   \\
+		\hline
+		64                      & 8          & TRUE  & 3.640   \\
+		64                      & 8          & FALSE & 5.306   \\
+		64                      & 16         & TRUE  & 382.949 \\
+		64                      & 16         & FALSE & 470.589 \\
+		64                      & 32         & TRUE  & 39.227  \\
+		64                      & 32         & FALSE & 46.471  \\
+		64                      & NA         & TRUE  & 2.772   \\
+		64                      & NA         & FALSE & 8.345   \\
+	\end{tabular}
+	\captionof{table}{Data collected}
+\end{center}
 
 \section{Discussion}
 It can be observed that the wall clock time taken for the simulation to complete increases as number of threads increases. This is because as number of threads increases, there is more contention of resources -- in our case contention for each train (thread) in using links (edges) between stations (vertices) and contention for each train in opening door at each station. We are managing this using an implicit queue through implementing a timekeeper to track the next allowed event to occur, protected by marking that section as critical. As such, for each link (edge) or station (vertex), only one train (thread) is able to register itself to the timekeeper at any given time -- others will have to wait.
