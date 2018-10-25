@@ -7,8 +7,8 @@ def count():
     files = list(filter(lambda x: x.endswith(".out"), os.listdir(".")))
     for f in files:
         fn = f[:-4]
-        res = count_one(f)
-        print("%s,%d"%(fn, res))
+        count, duration = count_one(f)
+        print("%s,%d,%d"%(fn, count, duration))
 
 
 def count_one(f):
@@ -18,13 +18,15 @@ def count_one(f):
         parse_row(row, train_history)
 
     count = 0
+    duration = 0
 
     for k in train_history.keys():
-        for _, step, _ in train_history[k]:
+        for _, step, dur in train_history[k]:
             if type(step) == tuple and len(step) == 2:
                 count += 1
+                duration += dur
 
-    return count
+    return count, duration
 
 
 def parse_input(contents):
