@@ -97,7 +97,7 @@ This time round, since we are generating smaller maps too, we reconfigured the t
 
 The testcases all specified 10,000 time ticks. We ran testcases for 8, 16, 32, and 64 processes/threads. For the OpenMPI programme, we ran it on 8, 16 and 32 cores using a rankfile across 4 Xeon nodes in the lab. We ran each test twice, once with the per-tick status output enabled, and another time with it disabled.
 
-Below you can find a sample input and visualisation of the adjacency matrix and the train lines for 8 edges/trains. All testcase input files, machinefile, rankfile and testcase generator script can all be found in the Appendix.
+Below you can find a sample input and visualisation of the adjacency matrix and the train lines for 8 edges/trains. All testcase input files and testcase generator script can all be found in the Appendix.
 
 \begin{center}
 	\begin{minipage}{.65\textwidth}
@@ -204,6 +204,7 @@ We also tried running with 1000 trains for each line using the the map containin
     65 proceses over 32 cores in 4 nodes & 42.253 \\
     Multithreaded & 127.469 \\
   \end{tabular}
+  \captionof{table}{Results of running map for 64 edges with 1000 trains}
 \end{center}
 
 \section{Discussion}
@@ -227,7 +228,118 @@ We also observe another trend -- that the variance in execution time falls when 
 Starvation will never occur in the simulation program that we wrote. This is because to decide which train to open door or to be allowed to use a link next, we are using a queue to implement First-Come-First-Serve (FCFS) scheduler, or in the case of the train doors, an implicit queue through the timekeeper. As such, every train is assured access to the link or permission to open door after a long enough time. The assumptions are that no train open its doors or travel using the links indefinitely (which we believe are fair to make).
 
 \newpage
-\section{Appendix A: Ruby script used to generate test cases}
+
+\section*{Appendix A: Testcases and configuration files used}
+\subsection*{8 edges}
+\begin{minted}{text}
+5
+Sengkang,Bukit Panjang,Mattar,Damai,Botanic Gardens
+0 0 0 0 6
+0 0 0 8 9
+0 0 0 0 5
+0 8 0 0 0
+6 9 5 0 0
+0.8,0.6,0.5,0.8,1.0
+Sengkang,Botanic Gardens,Bukit Panjang,Damai
+Mattar,Botanic Gardens,Bukit Panjang,Damai
+Sengkang,Botanic Gardens,Mattar
+10000
+3,3,2
+\end{minted}
+\subsection*{16 edges}
+\begin{minted}{text}
+9
+Cashew,City Hall,Sixth Avenue,Fernvale,Kovan,Holland Village,Tuas Crescent,Sengkang,Orchard
+0 0 9 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 9
+9 0 0 7 0 1 7 0 0
+0 0 7 0 0 0 0 6 0
+0 0 0 0 0 3 0 0 0
+0 0 1 0 3 0 0 0 1
+0 0 7 0 0 0 0 0 0
+0 0 0 6 0 0 0 0 0
+0 9 0 0 0 1 0 0 0
+0.6,0.4,0.3,0.5,0.9,1.0,0.7,1.0,0.7
+City Hall,Orchard,Holland Village,Sixth Avenue,Tuas Crescent
+City Hall,Orchard,Holland Village,Sixth Avenue,Fernvale,Sengkang
+Cashew,Sixth Avenue,Fernvale,Sengkang
+10000
+5,5,6
+\end{minted}
+\subsection*{32 edges}
+\begin{minted}{text}
+17
+Jalan Besar,Buona Vista,Sixth Avenue,Punggol,Little India,Kovan,Farrer Park,Newton,Kupang,Phoenix,Kranji,Keat Hong,Bras Basah,MacPherson,Compassvale,Mattar,Samudera
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0
+0 0 0 0 1 0 0 0 2 0 0 0 0 0 0 0 6
+0 0 0 0 0 9 0 0 0 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0 5 5 0 0 4 8 0
+1 0 0 9 0 0 0 0 0 0 6 0 6 3 0 0 0
+0 0 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 5 0 0 0 4 0 0 0 0 0 0
+0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 2 0 0 0 0 0 0 0 0 9 0 0 0 0 0 0
+0 0 0 0 5 6 0 4 0 9 0 0 0 0 0 0 0
+0 0 0 0 5 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 8 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0.7,0.1,1.0,0.7,0.1,1.0,0.3,0.9,0.8,1.0,1.0,0.6,0.9,0.2,0.2,0.4,0.8
+Bras Basah,Kovan,MacPherson
+Jalan Besar,Kovan,Punggol
+Punggol,Kovan,Bras Basah
+10000
+11,11,10
+\end{minted}
+\subsection*{64 edges}
+\begin{minted}{text}
+33
+Punggol Point,Fernvale,Orchard,Joo Koon,Ten Mile Junction,Bartley,Kallang,Fajar,Bayfront,Nibong,Sengkang,Toa Payoh,MacPherson,Esplanade,Newton,Boon Lay,Sam Kee,Sengkang,Kangkar,Little India,Tai Seng,Tiong Bahru,Soo Teck,Geylang Bahru,Buona Vista,Choa Chu Kang,Cheng Lim,Bishan,Botanic Gardens,Dhoby Ghaut,Kent Ridge,Changi Airport,Tampines
+0 1 0 0 0 0 9 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1 0 0 7 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 7 0 0 0 8 0 0 0 4 0 0 0 0 0 0 0 0 6 9 0 0 9 0 8 0 0 0 0 0 0 0 7
+0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 4 0 0
+9 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0
+0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 8 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 4 4 7 0 0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0
+0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+2 0 0 0 0 0 0 0 2 0 0 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 3 0 0 0 0 0 0
+0 0 0 0 8 0 0 0 0 0 0 4 0 0 0 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0.3,0.6,0.6,1.0,0.4,0.5,0.3,0.4,1.0,0.4,0.2,1.0,0.2,0.2,0.3,0.8,0.8,0.4,0.8,0.8,0.9,0.6, 0.4,0.9,0.7,0.7,0.4,0.8,0.1,0.5,0.3,0.7,0.5
+Fajar,Ten Mile Junction,Tiong Bahru,Toa Payoh,Newton,Punggol Point,Fernvale,Joo Koon,Little India,Geylang Bahru
+Sam Kee,MacPherson,Toa Payoh,Newton,Punggol Point,Fernvale,Joo Koon,Little India,Geylang Bahru
+Kent Ridge,Bartley,Joo Koon,Fernvale,Punggol Point,Newton,Toa Payoh,MacPherson,Changi Airport
+10000
+21,21,22
+\end{minted}
+
+\section*{Appendix B: Ruby script used to generate test cases}
 Below is the code listing of the ruby script used to generate test cases. Essentially, it does:
 \begin{enumerate}
 	\item Create a random adjacency matrix with diagonal = 0
@@ -239,8 +351,165 @@ Below is the code listing of the ruby script used to generate test cases. Essent
 	\item Ensure that the path is long enough, else go back to step 4.
 \end{enumerate}
 \begin{minted}{Ruby}
+require 'set'
 
-  # SOME CODE
+MIN_NUM_TERMINI = 3
+MIN_NUM_STATIONS_LINE = 2
+MRT_STATION_NAMES = ["Jurong East", "Bukit Batok", "Bukit Gombak", "Choa Chu Kang", "Yew Tee", "Kranji", "Marsiling", "Woodlands", "Admiralty", "Sembawang", "Yishun", "Khatib", "Yio Chu Kang", "Ang Mo Kio", "Bishan", "Braddell", "Toa Payoh", "Novena", "Newton", "Orchard", "Somerset", "Dhoby Ghaut", "City Hall", "Raffles Place", "Marina Bay", "Marina South Pier", "Pasir Ris", "Tampines", "Simei", "Tanah Merah", "Bedok", "Kembangan", "Eunos", "Paya Lebar", "Aljunied", "Kallang", "Lavender", "Bugis", "City Hall", "Raffles Place", "Tanjong Pagar", "Outram Park", "Tiong Bahru", "Redhill", "Queenstown", "Commonwealth", "Buona Vista", "Dover", "Clementi", "Jurong East", "Chinese Garden", "Lakeside", "Boon Lay", "Pioneer", "Joo Koon", "Gul Circle", "Tuas Crescent", "Tuas West Road", "Tuas Link", "Expo", "Changi Airport", "HarbourFront", "Outram Park", "Chinatown", "Clarke Quay", "Dhoby Ghaut", "Little India", "Farrer Park", "Boon Keng", "Potong Pasir", "Woodleigh", "Serangoon", "Kovan", "Hougang", "Buangkok", "Sengkang", "Punggol", "Dhoby Ghaut", "Bras Basah", "Esplanade", "Promenade", "Nicoll Highway", "Stadium", "Mountbatten", "Dakota", "Paya Lebar", "MacPherson", "Tai Seng", "Bartley", "Serangoon", "Lorong Chuan", "Bishan", "Marymount", "Caldecott", "Botanic Gardens", "Farrer Road", "Holland Village", "Buona Vista", "one-north", "Kent Ridge", "Haw Par Villa", "Pasir Panjang", "Labrador Park", "Telok Blangah", "HarbourFront", "Bayfront", "Marina Bay", "Bukit Panjang", "Cashew", "Hillview", "Beauty World", "King Albert Park", "Sixth Avenue", "Tan Kah Kee", "Botanic Gardens", "Stevens", "Newton", "Little India", "Rochor", "Bugis", "Promenade", "Bayfront", "Downtown", "Telok Ayer", "Chinatown", "Fort Canning", "Bencoolen", "Jalan Besar", "Bendemeer", "Geylang Bahru", "Mattar", "MacPherson", "Ubi", "Kaki Bukit", "Bedok North", "Bedok Reservoir", "Tampines West", "Tampines", "Tampines East", "Upper Changi", "Expo", "Choa Chu Kang", "South View", "Keat Hong", "Teck Whye", "Phoenix", "Bukit Panjang", "Petir", "Pending", "Bangkit", "Fajar", "Segar", "Jelapang", "Senja", "Ten Mile Junction", "Sengkang", "Compassvale", "Rumbia", "Bakau", "Kangkar", "Ranggung", "Cheng Lim", "Farmway", "Kupang", "Thanggam", "Fernvale", "Layar", "Tongkang", "Renjong", "Punggol", "Cove", "Meridian", "Coral Edge", "Riviera", "Kadaloor", "Oasis", "Damai", "Sam Kee", "Teck Lee", "Punggol Point", "Samudera", "Nibong", "Sumang", "Soo Teck"]
 
-	\end{minted}
+def generate_random_graph(s, max_weight)
+  Array.new(s) { |i| Array.new(s) { |j| i == j ? 0 : rand(1..max_weight) } }
+end
+
+def print_graph(matrix)
+  matrix.map { |row| row.join(' ') }.join("\n")
+end
+
+def prim(matrix)
+  cost = Array.new(matrix.length, Float::INFINITY)
+  parent = Array.new(matrix.length, nil)
+  visited = Array.new(matrix.length, false)
+
+
+  # start from the first vertex
+  cost[0] = 0
+  parent[0] = -1
+
+  matrix.length.times do
+    u = nil
+    min_weight = Float::INFINITY
+
+    # Find unvisited vertex with minimum cost
+    cost.zip(visited).each_with_index do |zipped, i|
+      c, v = zipped
+      if c < min_weight and !v
+        min_weight = c
+        u = i
+      end
+    end
+    visited[u] = true
+
+    matrix[u].zip(cost, visited).each_with_index do |zipped, i|
+      m, c, v = zipped
+      if m > 0 && !v && c > m
+        cost[i] = m
+        parent[i] = u
+      end
+    end
+  end
+
+  result = Array.new(matrix.length) { Array.new(matrix.length, 0) }
+
+  (1...matrix.length).each do |i|
+    result[i][parent[i]] = result[parent[i]][i] = matrix[i][parent[i]]
+  end
+
+  result
+end
+
+def bfs(matrix, termini)
+  from, to = termini
+  open_set = []
+  closed_set = Set[]
+  meta = {}
+
+  root = from
+  meta[root] = nil
+  open_set.unshift(root)
+
+  while !open_set.empty? do
+    subtree_root = open_set.shift
+    if subtree_root == to
+      return construct_path(subtree_root, meta)
+    end
+    matrix[subtree_root].each_with_index.select { |w, i| w > 0 }.map { |x| x.last }.each do |child|
+      next if closed_set.include?(child)
+      if !open_set.include?(child)
+        meta[child] = subtree_root
+        open_set.unshift(child)
+      end
+    end
+    closed_set.add(subtree_root)
+  end
+end
+
+def construct_path(state, meta)
+  result = [state]
+  while !meta[state].nil? do
+    state = meta[state]
+    result.append(state)
+  end
+  result.reverse
+end
+
+def permutate_sum(n)
+  (0..n).to_a.flat_map { |i| (0..(n - i)).to_a.map { |j| [i, j, n - i - j] } }
+end
+
+def usage_message
+  puts "Invalid args"
+  puts "Usage: ruby test_case_generator.rb <max_weight> <num_tick>"
+  exit 1
+end
+
+# Start of main
+if ARGV.length != 2
+  usage_message
+end
+
+max_weight, tick = ARGV.map { |a| a.to_i }
+
+if max_weight <= 0
+  usage_message
+end
+
+
+dir_name = "test-#{Time.now.strftime("%Y%m%d-%H%M")}"
+Dir.mkdir(dir_name)
+
+[[3, 3, 2], [5, 5, 6], [11, 11, 10], [21, 21, 22]].each do |trains|
+  n = trains.inject(&:+)
+  s = n / 2 + 1
+
+  puts n, s
+
+  primmed = nil
+  termini = []
+
+  while termini.length < MIN_NUM_TERMINI do
+    graph = generate_random_graph(s, max_weight)
+    primmed = prim(graph)
+    termini = primmed
+      .each_with_index.select do |row, i|
+        row.reduce(0) { |acc, weight| acc += weight > 0 ? 1 : 0 } == 1
+      end
+      .map { |pair| pair.last }
+  end
+
+  stations = MRT_STATION_NAMES.sample(s)
+  popularities = Array.new(s) { rand(1..10) / 10.0 }
+
+  green_line = []
+  yellow_line = []
+  blue_line = []
+  while green_line.length < MIN_NUM_STATIONS_LINE || yellow_line.length < MIN_NUM_STATIONS_LINE || blue_line.length < MIN_NUM_STATIONS_LINE do
+    green_termini, yellow_termini, blue_termini = termini.combination(2).to_a.sample(3)
+
+    green_line = bfs(primmed, green_termini)
+    yellow_line = bfs(primmed, yellow_termini)
+    blue_line = bfs(primmed, blue_termini)
+  end
+  File.open("#{dir_name}/#{n}_#{trains.join("-")}", "w") do |f|
+    f.puts s
+    f.puts stations.join(",")
+    f.puts print_graph(primmed)
+    f.puts popularities.join(",")
+    f.puts green_line.map { |s| stations[s] }.join(",")
+    f.puts yellow_line.map { |s| stations[s] }.join(",")
+    f.puts blue_line.map { |s| stations[s] }.join(",")
+    f.puts tick
+    f.puts trains.join(",")
+  end
+end
+\end{minted}
 \end{document}
